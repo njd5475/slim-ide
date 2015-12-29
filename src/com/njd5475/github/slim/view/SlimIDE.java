@@ -70,7 +70,7 @@ public class SlimIDE {
 			});
 		}
 		frame.setVisible(true);
-
+		editor.requestFocus();
 	}
 
 }

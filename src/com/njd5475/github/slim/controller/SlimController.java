@@ -37,4 +37,8 @@ public class SlimController implements FileChangeListener {
 		return numberOfLines;
 	}
 
+	public int getLineLength(int cursorLine) {
+		return 0;
+	}
+
 }

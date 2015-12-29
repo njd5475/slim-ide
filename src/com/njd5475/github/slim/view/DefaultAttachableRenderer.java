@@ -1,5 +1,6 @@
 package com.njd5475.github.slim.view;
 
+import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Rectangle;
@@ -20,9 +21,12 @@ public class DefaultAttachableRenderer implements SlimRenderVisitor {
 	private int					lineHeight;
 	private int					margin;
 	private Graphics2D	lineOnly;
-	private int					tabWidth	= 2;
-	private String			tabSpaces	= null;
-	private int					lineY			= 0;
+	private int					tabWidth		= 2;
+	private String			tabSpaces		= null;
+	private int					lineY				= 0;
+	private int					currentLine	= 0;
+	private int					cursorColumn;
+	private int					cursorLine;
 
 	public DefaultAttachableRenderer() {
 		resetTabWidth(tabWidth);
@@ -72,10 +76,13 @@ public class DefaultAttachableRenderer implements SlimRenderVisitor {
 		SlimFileContext context = controller.getFileContext();
 		margin = slimEditor.getCurrentMargin();
 		lineHeight = slimEditor.getLineHeight();
+		currentLine = 0;
+		cursorColumn = slimEditor.getCursorColumn();
+		cursorLine = slimEditor.getCusorLine();
 		for (SlimFileWrapper wrapper : context.getFiles()) {
 			wrapper.render(this);
 		}
-		long end = System.currentTimeMillis()-start;
+		long end = System.currentTimeMillis() - start;
 	}
 
 	@Override
@@ -84,6 +91,13 @@ public class DefaultAttachableRenderer implements SlimRenderVisitor {
 		for (SlimSymbolWrapper sym : slimLineWrapper.getSymbols()) {
 			sym.render(this);
 		}
+		if(currentLine == cursorLine) {
+				Graphics2D cursor = (Graphics2D) currentLineG.create();
+				cursor.setColor(new Color(Color.yellow.getRed(), Color.yellow.getGreen(), Color.yellow.getBlue(), 100));
+				cursor.fillRect(0, -lineHeight, 100, lineHeight);
+				cursor.dispose();
+		}
+		++currentLine; //increment the current line count
 		lineOnly.dispose();
 	}
 

@@ -7,6 +7,8 @@ import java.awt.Graphics2D;
 import java.awt.GraphicsEnvironment;
 import java.awt.RenderingHints;
 import java.awt.RenderingHints.Key;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 import java.awt.event.MouseWheelEvent;
 import java.awt.event.MouseWheelListener;
 import java.util.HashMap;
@@ -26,6 +28,8 @@ public class SlimEditor extends JPanel {
 	private double													scrollOffsetY	= 0;
 	private Color														background		= Color.white;
 	private Map<RenderingHints.Key, Object>	renderingHints;
+	private int cursorLine;
+	private int cursorColumn;
 
 	public SlimEditor(SlimSettings defaults, SlimController controller) {
 		this.setPreferredSize(defaults.getWindowDimensions());
@@ -52,7 +56,53 @@ public class SlimEditor extends JPanel {
 				repaint();
 			}
 		});
-
+		this.addKeyListener(new KeyListener() {
+			
+			@Override
+			public void keyTyped(KeyEvent e) {
+				// TODO Auto-generated method stub
+				
+			}
+			
+			@Override
+			public void keyReleased(KeyEvent e) {
+				if(e.getKeyCode() == KeyEvent.VK_RIGHT) {
+					cursorColumn++;
+				}else if(e.getKeyCode() == KeyEvent.VK_LEFT) {
+					cursorColumn--;
+				}else if(e.getKeyCode() == KeyEvent.VK_UP) {
+					cursorLine--;
+				}else if(e.getKeyCode() == KeyEvent.VK_DOWN) {
+					cursorLine++;
+				}
+				
+				if(cursorColumn > SlimEditor.this.controller.getLineLength(cursorLine)) {
+					cursorLine++;
+					cursorColumn = 0;
+				}
+				
+				if(cursorColumn < 0) {
+					cursorLine--;
+					cursorColumn = SlimEditor.this.controller.getLineLength(cursorLine);
+				}
+				
+				if(cursorLine > SlimEditor.this.controller.getTotalLines()) {
+					cursorLine = SlimEditor.this.controller.getTotalLines();
+				}
+				
+				if(cursorLine < 0) {
+					cursorLine = 0;
+				}
+				
+				SlimEditor.this.repaint();
+			}
+			
+			@Override
+			public void keyPressed(KeyEvent e) {
+				// TODO Auto-generated method stub
+				
+			}
+		});
 		this.setBackground(background);
 		refreshRenderingHints();
 	}
@@ -87,7 +137,14 @@ public class SlimEditor extends JPanel {
 
 	public SlimController getController() {
 		return controller;
-
+	}
+	
+	public int getCusorLine() {
+		return cursorLine;
+	}
+	
+	public int getCursorColumn() {
+		return cursorColumn;
 	}
 
 	public int getCurrentMargin() {
