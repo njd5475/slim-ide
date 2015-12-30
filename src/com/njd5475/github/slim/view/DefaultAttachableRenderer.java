@@ -1,5 +1,6 @@
 package com.njd5475.github.slim.view;
 
+import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
@@ -27,6 +28,8 @@ public class DefaultAttachableRenderer implements SlimRenderVisitor {
 	private int					currentLine	= 0;
 	private int					cursorColumn;
 	private int					cursorLine;
+	private int[]				widths;
+	private int					currentChar;
 
 	public DefaultAttachableRenderer() {
 		resetTabWidth(tabWidth);
@@ -72,6 +75,7 @@ public class DefaultAttachableRenderer implements SlimRenderVisitor {
 	public void renderEditor(SlimEditor slimEditor, Graphics g) {
 		long start = System.currentTimeMillis();
 		this.g = g;
+		this.widths = g.getFontMetrics().getWidths();
 		SlimController controller = slimEditor.getController();
 		SlimFileContext context = controller.getFileContext();
 		margin = slimEditor.getCurrentMargin();
@@ -83,28 +87,51 @@ public class DefaultAttachableRenderer implements SlimRenderVisitor {
 			wrapper.render(this);
 		}
 		long end = System.currentTimeMillis() - start;
+		System.out.println("Render took " + end + "ms");
 	}
 
 	@Override
 	public void render(SlimLineWrapper slimLineWrapper) {
 		lineOnly = (Graphics2D) currentLineG.create();
+		currentChar = 0;
 		for (SlimSymbolWrapper sym : slimLineWrapper.getSymbols()) {
 			sym.render(this);
 		}
-		if(currentLine == cursorLine) {
-				Graphics2D cursor = (Graphics2D) currentLineG.create();
-				cursor.setColor(new Color(Color.yellow.getRed(), Color.yellow.getGreen(), Color.yellow.getBlue(), 100));
-				cursor.fillRect(0, -lineHeight, 100, lineHeight);
-				cursor.dispose();
+		if (currentLine == cursorLine) {
+			Graphics2D cursor = (Graphics2D) currentLineG.create();
+			cursor.setColor(new Color(Color.yellow.getRed(), Color.yellow.getGreen(), Color.yellow.getBlue(), 100));
+			cursor.fillRect(0, -lineHeight, cursor.getClipBounds().width, lineHeight);
+			cursor.dispose();
 		}
-		++currentLine; //increment the current line count
+		++currentLine; // increment the current line count
 		lineOnly.dispose();
 	}
 
 	@Override
 	public void render(SlimSymbolWrapper symbol) {
-		lineOnly.drawString(symbol.toString(), 0, 0);
-		lineOnly.translate(lineOnly.getFontMetrics().stringWidth(symbol.toString().replaceAll("\t", tabSpaces)), 0);
+
+		char[] symChars = symbol.toString().toCharArray();
+		Color originalBackground = lineOnly.getBackground();
+		for (char c : symChars) {
+			if (currentChar == cursorColumn && currentLine == cursorLine) {
+				Graphics2D block = (Graphics2D) lineOnly.create();
+				block.setColor(Color.BLACK);
+				block.setStroke(new BasicStroke(2));
+				block.drawLine(0, -lineHeight, 0, 0);
+				block.dispose();
+			}
+			if (c != '\t') {
+				lineOnly.drawString(String.valueOf(c), 0, 0);
+				lineOnly.translate(widths[c], 0);
+			} else {
+				lineOnly.translate(tabWidth * widths[' '], 0);
+			}
+			currentChar++;
+
+		}
+		// lineOnly.drawString(symbol.toString(), 0, 0);
+		// lineOnly.translate(lineOnly.getFontMetrics().stringWidth(symbol.toString().replaceAll("\t",
+		// tabSpaces)), 0);
 	}
 
 }
