@@ -30,6 +30,8 @@ public class DefaultAttachableRenderer implements SlimRenderVisitor {
 	private int					cursorLine;
 	private int[]				widths;
 	private int					currentChar;
+	private int					drawWidth;
+	private int					maxDescent;
 
 	public DefaultAttachableRenderer() {
 		resetTabWidth(tabWidth);
@@ -62,7 +64,12 @@ public class DefaultAttachableRenderer implements SlimRenderVisitor {
 			}
 			line.render(this);
 		}
-		currentLineG.drawString("Total lines " + slimFileWrapper.getLines().size(), 0, 0);
+		currentLineG.drawString("Total lines " + slimFileWrapper.getLines().size(), 0, lineHeight-maxDescent);
+		String nextFile = String.format("Next File: %s", slimFileWrapper.getNext());
+		int totalWidth = currentLineG.getClipBounds().width - margin;
+		int strWidth = currentLineG.getFontMetrics().stringWidth(nextFile);
+		currentLineG.drawString(nextFile, totalWidth - strWidth,
+				lineHeight - maxDescent);
 		currentLineG.dispose();
 	}
 
@@ -76,10 +83,12 @@ public class DefaultAttachableRenderer implements SlimRenderVisitor {
 		long start = System.currentTimeMillis();
 		this.g = g;
 		this.widths = g.getFontMetrics().getWidths();
+		this.maxDescent = g.getFontMetrics().getMaxDescent();
 		SlimController controller = slimEditor.getController();
 		SlimFileContext context = controller.getFileContext();
 		margin = slimEditor.getCurrentMargin();
 		lineHeight = slimEditor.getLineHeight();
+		drawWidth = slimEditor.getWidth();
 		currentLine = 0;
 		cursorColumn = slimEditor.getCursorColumn();
 		cursorLine = slimEditor.getCusorLine();
@@ -87,7 +96,7 @@ public class DefaultAttachableRenderer implements SlimRenderVisitor {
 			wrapper.render(this);
 		}
 		long end = System.currentTimeMillis() - start;
-		System.out.println("Render took " + end + "ms");
+		// System.out.println("Render took " + end + "ms");
 	}
 
 	@Override
@@ -97,12 +106,12 @@ public class DefaultAttachableRenderer implements SlimRenderVisitor {
 		if (currentLine == cursorLine) {
 			Graphics2D cursor = (Graphics2D) lineOnly.create();
 			cursor.setColor(new Color(Color.yellow.getRed(), Color.yellow.getGreen(), Color.yellow.getBlue(), 100));
-			cursor.fillRect(0, -lineHeight, cursor.getClipBounds().width, lineHeight+cursor.getFontMetrics().getMaxDescent());
+			cursor.fillRect(0, -lineHeight, cursor.getClipBounds().width, lineHeight + maxDescent);
 			cursor.dispose();
 		}
 		for (SlimSymbolWrapper sym : slimLineWrapper.getSymbols()) {
 			sym.render(this);
-		}		
+		}
 		++currentLine; // increment the current line count
 		lineOnly.dispose();
 	}
@@ -117,7 +126,7 @@ public class DefaultAttachableRenderer implements SlimRenderVisitor {
 				Graphics2D block = (Graphics2D) lineOnly.create();
 				block.setColor(Color.BLACK);
 				block.setStroke(new BasicStroke(2));
-				block.drawLine(0, -lineHeight+1, 0, block.getFontMetrics().getMaxDescent());
+				block.drawLine(0, -lineHeight + 1, 0, block.getFontMetrics().getMaxDescent());
 				block.dispose();
 			}
 			if (c != '\t') {

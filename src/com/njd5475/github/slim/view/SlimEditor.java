@@ -48,10 +48,10 @@ public class SlimEditor extends JPanel {
 			@Override
 			public void mouseWheelMoved(MouseWheelEvent e) {
 				double rot = e.getWheelRotation();
-				scrollOffsetY -= lineHeight * rot;
+				scrollOffsetY -= lineHeight * rot * 2;
 				scrollOffsetY = Math.min(0, scrollOffsetY);
-				if (Math.abs(scrollOffsetY) + getHeight() > getMaxHeight()) {
-					scrollOffsetY = -(getMaxHeight() - getHeight());
+				if (Math.abs(scrollOffsetY) + getHeight() > getMaxHeight()+getLineHeight()) {
+					scrollOffsetY = -(getMaxHeight() - getHeight()+getLineHeight());
 				}
 				repaint();
 			}

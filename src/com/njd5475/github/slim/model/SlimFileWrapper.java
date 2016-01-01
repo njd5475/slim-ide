@@ -5,6 +5,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
@@ -61,4 +62,9 @@ public class SlimFileWrapper {
 			loaded = true;
 		}
 	}
+	
+	public File getNext() {
+		return (new TreeSet<File>(Arrays.asList(file.getParentFile().listFiles()))).iterator().next();
+	}
+	
 }
