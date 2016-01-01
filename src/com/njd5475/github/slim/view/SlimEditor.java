@@ -7,6 +7,7 @@ import java.awt.Graphics2D;
 import java.awt.GraphicsEnvironment;
 import java.awt.RenderingHints;
 import java.awt.RenderingHints.Key;
+import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.event.MouseWheelEvent;
@@ -75,6 +76,10 @@ public class SlimEditor extends JPanel {
 					cursorLine--;
 				}else if(e.getKeyCode() == KeyEvent.VK_DOWN) {
 					cursorLine++;
+				} else if(e.getKeyCode() == KeyEvent.VK_T && e.isAltDown()) {
+					if (SlimIDE.DEVELOPMENT) {
+						SlimIDE.takeScreenshot();
+					}
 				}else{
 					isChar = true;
 				}
