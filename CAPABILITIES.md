@@ -8,7 +8,8 @@
 * Capability for the user to have multiple files displayed simultaneously one after the other in the editor and be allowed to scroll between them.
 
 ## Missing Capabilities (in priority order)
- 
+
+* Capability for the user to clear see where one file ends and another begins 
 * Capability for the user to know where the current scroll position is so they know approximately how far through the current number of lines they are.
 * Capability for the user to open files on click from the current directory if no files are opened from the command line.
 * Capability for the user to tell which file is currently visible
