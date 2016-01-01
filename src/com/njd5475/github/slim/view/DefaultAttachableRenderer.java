@@ -64,6 +64,12 @@ public class DefaultAttachableRenderer implements SlimRenderVisitor {
 			}
 			line.render(this);
 		}
+		Graphics2D cursor = (Graphics2D) currentLineG.create();
+		cursor.setColor(new Color(Color.blue.getRed(), Color.blue.getGreen(), Color.blue.getBlue(), 100));
+		cursor.fillRect(0, 0, cursor.getClipBounds().width, lineHeight + maxDescent);
+		cursor.setColor(Color.black);
+		cursor.drawLine(0,0,cursor.getClipBounds().width, 0);
+		cursor.dispose();
 		currentLineG.drawString("Total lines " + slimFileWrapper.getLines().size(), 0, lineHeight - maxDescent);
 		currentLineG.dispose();
 	}
@@ -89,7 +95,7 @@ public class DefaultAttachableRenderer implements SlimRenderVisitor {
 		cursorLine = slimEditor.getCusorLine();
 		for (SlimFileWrapper wrapper : context.getFiles()) {
 			wrapper.render(this);
-			g.translate(0, wrapper.getLineCount()*lineHeight);
+			g.translate(0, (wrapper.getLineCount()*lineHeight)+lineHeight+maxDescent);
 		}
 		String nextFile = String.format("Next File: %s", context.getNextFile());
 		int totalWidth = g.getClipBounds().width - margin;
