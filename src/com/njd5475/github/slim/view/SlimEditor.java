@@ -65,7 +65,8 @@ public class SlimEditor extends JPanel {
 			}
 			
 			@Override
-			public void keyReleased(KeyEvent e) {
+			public void keyPressed(KeyEvent e) {
+				boolean isChar = false;
 				if(e.getKeyCode() == KeyEvent.VK_RIGHT) {
 					cursorColumn++;
 				}else if(e.getKeyCode() == KeyEvent.VK_LEFT) {
@@ -74,37 +75,55 @@ public class SlimEditor extends JPanel {
 					cursorLine--;
 				}else if(e.getKeyCode() == KeyEvent.VK_DOWN) {
 					cursorLine++;
+				}else{
+					isChar = true;
 				}
 				
-				if(cursorColumn > SlimEditor.this.controller.getLineLength(cursorLine)) {
-					cursorLine++;
-					cursorColumn = 0;
-				}
+				clampCursor();
 				
-				if(cursorColumn < 0) {
-					cursorLine--;
-					cursorColumn = SlimEditor.this.controller.getLineLength(cursorLine);
-				}
-				
-				if(cursorLine > SlimEditor.this.controller.getTotalLines()) {
-					cursorLine = SlimEditor.this.controller.getTotalLines();
-				}
-				
-				if(cursorLine < 0) {
-					cursorLine = 0;
+				if(isChar) {
+					SlimEditor.this.controller.addCharacterAt(e.getKeyChar(), cursorLine, cursorColumn);
+					cursorColumn++;
+					clampCursor();
 				}
 				
 				SlimEditor.this.repaint();
 			}
 			
 			@Override
-			public void keyPressed(KeyEvent e) {
+			public void keyReleased(KeyEvent e) {
 				// TODO Auto-generated method stub
 				
 			}
 		});
 		this.setBackground(background);
 		refreshRenderingHints();
+	}
+
+	protected void clampCursor() {
+		if(cursorLine > SlimEditor.this.controller.getTotalLines()) {
+			cursorLine = SlimEditor.this.controller.getTotalLines();
+		}
+		
+		if(cursorLine < 0) {
+			cursorLine = 0;
+		}
+		
+		if(cursorColumn > SlimEditor.this.controller.getLineLength(cursorLine)) {
+			cursorLine++;
+			if(cursorLine > SlimEditor.this.controller.getTotalLines()) {
+				cursorLine = SlimEditor.this.controller.getTotalLines();
+			}
+			cursorColumn = 0;
+		}
+		
+		if(cursorColumn < 0) {
+			cursorLine--;
+			if(cursorLine < 0) {
+				cursorLine = 0;
+			}
+			cursorColumn = SlimEditor.this.controller.getLineLength(cursorLine);
+		}
 	}
 
 	private void refreshRenderingHints() {

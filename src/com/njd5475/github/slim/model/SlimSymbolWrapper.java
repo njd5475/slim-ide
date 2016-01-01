@@ -58,4 +58,13 @@ public class SlimSymbolWrapper implements SlimRenderable {
 		next = null;
 		return symbols;
 	}
+
+	public int length() {
+		return symbols.length();
+	}
+
+	public void addCharacterAt(char keyChar, int i) {
+		System.out.println("Inserting character at " + i);
+		symbols.insert(i, keyChar);
+	}
 }

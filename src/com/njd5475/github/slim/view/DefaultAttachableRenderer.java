@@ -94,15 +94,15 @@ public class DefaultAttachableRenderer implements SlimRenderVisitor {
 	public void render(SlimLineWrapper slimLineWrapper) {
 		lineOnly = (Graphics2D) currentLineG.create();
 		currentChar = 0;
-		for (SlimSymbolWrapper sym : slimLineWrapper.getSymbols()) {
-			sym.render(this);
-		}
 		if (currentLine == cursorLine) {
-			Graphics2D cursor = (Graphics2D) currentLineG.create();
+			Graphics2D cursor = (Graphics2D) lineOnly.create();
 			cursor.setColor(new Color(Color.yellow.getRed(), Color.yellow.getGreen(), Color.yellow.getBlue(), 100));
-			cursor.fillRect(0, -lineHeight, cursor.getClipBounds().width, lineHeight);
+			cursor.fillRect(0, -lineHeight, cursor.getClipBounds().width, lineHeight+cursor.getFontMetrics().getMaxDescent());
 			cursor.dispose();
 		}
+		for (SlimSymbolWrapper sym : slimLineWrapper.getSymbols()) {
+			sym.render(this);
+		}		
 		++currentLine; // increment the current line count
 		lineOnly.dispose();
 	}
@@ -117,7 +117,7 @@ public class DefaultAttachableRenderer implements SlimRenderVisitor {
 				Graphics2D block = (Graphics2D) lineOnly.create();
 				block.setColor(Color.BLACK);
 				block.setStroke(new BasicStroke(2));
-				block.drawLine(0, -lineHeight, 0, 0);
+				block.drawLine(0, -lineHeight+1, 0, block.getFontMetrics().getMaxDescent());
 				block.dispose();
 			}
 			if (c != '\t') {

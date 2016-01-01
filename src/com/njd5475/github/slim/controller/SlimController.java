@@ -1,7 +1,10 @@
 package com.njd5475.github.slim.controller;
 
+import java.util.Collection;
+
 import com.njd5475.github.slim.model.SlimFileContext;
 import com.njd5475.github.slim.model.SlimFileWrapper;
+import com.njd5475.github.slim.model.SlimLineWrapper;
 import com.njd5475.github.slim.view.SlimRenderVisitor;
 
 public class SlimController implements FileChangeListener {
@@ -38,7 +41,29 @@ public class SlimController implements FileChangeListener {
 	}
 
 	public int getLineLength(int cursorLine) {
+		SlimLineWrapper line = getLine(cursorLine);
+		if(line != null) {
+			return line.length();
+		}
 		return 0;
 	}
 
+	public void addCharacterAt(char keyChar, int cursorLine, int cursorColumn) {
+		SlimLineWrapper line = getLine(cursorLine);
+		line.addCharacterAt(keyChar, cursorColumn);
+	}
+
+	public SlimLineWrapper getLine(int linenum) {
+		int totalLinesReached = 0, lastTotal= 0;
+		for (SlimFileWrapper file : this.fileContext.getFiles()) {
+			Collection<SlimLineWrapper> lines = file.getLines();
+			lastTotal = totalLinesReached;
+			totalLinesReached += lines.size();
+			if(linenum <= totalLinesReached) {
+				SlimLineWrapper[] array = lines.toArray(new SlimLineWrapper[lines.size()]);
+				return array[linenum-lastTotal];
+			}
+		}
+		return null;
+	}
 }
