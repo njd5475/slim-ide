@@ -12,3 +12,4 @@
 * Capability for the user to know where the current scroll position is so they know approximately how far through the current number of lines they are.
 * Capability for the user to open files on click from the current directory if no files are opened from the command line.
 * Capability for the user to tell which file is currently visible
+* Capability for the user to scroll using the cursor line if the user moves the cursor outside of the visible area the scroll offset should adjust to display the current line.
