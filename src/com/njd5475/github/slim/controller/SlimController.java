@@ -59,7 +59,7 @@ public class SlimController implements FileChangeListener {
 			Collection<SlimLineWrapper> lines = file.getLines();
 			lastTotal = totalLinesReached;
 			totalLinesReached += lines.size();
-			if(linenum <= totalLinesReached) {
+			if(linenum < totalLinesReached) {
 				SlimLineWrapper[] array = lines.toArray(new SlimLineWrapper[lines.size()]);
 				return array[linenum-lastTotal];
 			}

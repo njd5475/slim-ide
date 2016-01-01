@@ -76,5 +76,9 @@ public class SlimFileWrapper {
 		}
 		return nextFiles;
 	}
+
+	public int getLineCount() {
+		return lines.size();
+	}
 	
 }

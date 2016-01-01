@@ -89,6 +89,7 @@ public class DefaultAttachableRenderer implements SlimRenderVisitor {
 		cursorLine = slimEditor.getCusorLine();
 		for (SlimFileWrapper wrapper : context.getFiles()) {
 			wrapper.render(this);
+			g.translate(0, wrapper.getLineCount()*lineHeight);
 		}
 		String nextFile = String.format("Next File: %s", context.getNextFile());
 		int totalWidth = g.getClipBounds().width - margin;
