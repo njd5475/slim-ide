@@ -6,9 +6,9 @@
 * Capability for the user to scroll via the mouse wheel
 * Capability for the user to see the next file or directory that could be opened from the current directory.
 
-## Missing Capabilities
+## Missing Capabilities (in priority order)
 
-* Capability for the user to open files on click from the current directory if no files are opened from the command line.
-* Capability for the user to know where the current scroll position is so they know approximately how far through the current number of lines they are.
-* Capability for the user to have multiple files displayed simultaneously one after the other in the editor and be allowed to scroll between them. 
 * Capability for the user to see only the next file and not directories that could be opened by the editor from the current directory minus the files already opened if there are no more files to open and there are other directories listed those should be open next.
+* Capability for the user to have multiple files displayed simultaneously one after the other in the editor and be allowed to scroll between them. 
+* Capability for the user to know where the current scroll position is so they know approximately how far through the current number of lines they are.
+* Capability for the user to open files on click from the current directory if no files are opened from the command line.
