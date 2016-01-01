@@ -64,12 +64,7 @@ public class DefaultAttachableRenderer implements SlimRenderVisitor {
 			}
 			line.render(this);
 		}
-		currentLineG.drawString("Total lines " + slimFileWrapper.getLines().size(), 0, lineHeight-maxDescent);
-		String nextFile = String.format("Next File: %s", slimFileWrapper.getNext());
-		int totalWidth = currentLineG.getClipBounds().width - margin;
-		int strWidth = currentLineG.getFontMetrics().stringWidth(nextFile);
-		currentLineG.drawString(nextFile, totalWidth - strWidth,
-				lineHeight - maxDescent);
+		currentLineG.drawString("Total lines " + slimFileWrapper.getLines().size(), 0, lineHeight - maxDescent);
 		currentLineG.dispose();
 	}
 
@@ -95,6 +90,10 @@ public class DefaultAttachableRenderer implements SlimRenderVisitor {
 		for (SlimFileWrapper wrapper : context.getFiles()) {
 			wrapper.render(this);
 		}
+		String nextFile = String.format("Next File: %s", context.getNextFile());
+		int totalWidth = g.getClipBounds().width - margin;
+		int strWidth = g.getFontMetrics().stringWidth(nextFile);
+		g.drawString(nextFile, totalWidth - strWidth, lineHeight - maxDescent);
 		long end = System.currentTimeMillis() - start;
 		// System.out.println("Render took " + end + "ms");
 	}

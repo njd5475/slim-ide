@@ -63,8 +63,18 @@ public class SlimFileWrapper {
 		}
 	}
 	
-	public File getNext() {
-		return (new TreeSet<File>(Arrays.asList(file.getParentFile().listFiles()))).iterator().next();
+	public File getFile() {
+		return file;
+	}
+	
+	public Set<File> getNext() {
+		Set<File> nextFiles = new TreeSet<File>();
+		for(File f : file.getParentFile().listFiles()) {
+			if(f.isFile() && !f.isHidden()) {
+				nextFiles.add(f);
+			}
+		}
+		return nextFiles;
 	}
 	
 }

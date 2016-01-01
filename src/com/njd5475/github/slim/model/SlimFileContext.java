@@ -55,4 +55,26 @@ public class SlimFileContext implements FileChangeListener {
 
 	}
 
+	public File getNextFile() {
+		Set<File> nextFiles = new TreeSet<File>();
+		for(SlimFileWrapper file : files) {
+			nextFiles.addAll(file.getNext());
+		}
+		for(SlimFileWrapper file : files) {
+			nextFiles.remove(file.getFile());
+		}
+		if(nextFiles.isEmpty()) {
+			File parentDir = files.iterator().next().getFile().getParentFile();
+			for(File dirsInParent : parentDir.listFiles()) {
+				if(dirsInParent.isDirectory() && dirsInParent.listFiles().length > 0) {
+					for(File maybe : dirsInParent.listFiles()) {
+						if(maybe.isFile()) {
+							nextFiles.add(maybe);
+						}
+					}
+				}
+			}
+		}
+		return nextFiles.iterator().next();
+	}
 }
