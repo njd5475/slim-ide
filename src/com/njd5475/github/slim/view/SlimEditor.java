@@ -68,7 +68,7 @@ public class SlimEditor extends JPanel {
 
 			@Override
 			public void keyTyped(KeyEvent e) {
-				if (e.getKeyCode() != 0) {
+				if (e.getKeyChar() >= ' ' && e.getKeyChar() <= '~') {
 					SlimEditor.this.controller.addCharacterAt(e.getKeyChar(), cursorLine, cursorColumn);
 					cursorColumn++;
 					clampCursor();
@@ -92,6 +92,10 @@ public class SlimEditor extends JPanel {
 					}
 				} else if (e.getKeyCode() == KeyEvent.VK_DELETE) {
 					SlimEditor.this.controller.removeCharacterAt(cursorLine, cursorColumn);
+				} else if (e.getKeyCode() == KeyEvent.VK_BACK_SPACE) {
+					if (cursorColumn > 0) {
+						SlimEditor.this.controller.removeCharacterAt(cursorLine, --cursorColumn);
+					}
 				}
 
 				clampCursor();
@@ -111,8 +115,8 @@ public class SlimEditor extends JPanel {
 
 	protected void calcLinesShown() {
 		double scrollY = Math.abs(scrollOffsetY);
-		minLine = (int)Math.floor(scrollY / getLineHeight());
-		maxLine = (int)Math.ceil((scrollY + getHeight()) / getLineHeight());
+		minLine = (int) Math.floor(scrollY / getLineHeight());
+		maxLine = (int) Math.ceil((scrollY + getHeight()) / getLineHeight());
 		Set<SlimFileWrapper> nowShown = controller.getFilesForLines(minLine, maxLine);
 		if (!nowShown.containsAll(filesShown) || nowShown.size() != filesShown.size()) {
 			// it's changed so update and notify
@@ -122,7 +126,7 @@ public class SlimEditor extends JPanel {
 	}
 
 	private void notifyListenersFilesShownChanged(Set<SlimFileWrapper> filesShown2) {
-		for(EditorListener l : listeners) {
+		for (EditorListener l : listeners) {
 			l.filesShownChanged(filesShown2);
 		}
 	}

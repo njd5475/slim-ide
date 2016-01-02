@@ -53,7 +53,7 @@ public class SlimIDE {
 					}
 					++i;
 				}
-				frame.setTitle("SlimIDE " + files);
+				frame.setTitle("SlimIDE" + files);
 			}			
 		});
 		frame.setLayout(new BorderLayout());
