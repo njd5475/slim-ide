@@ -77,4 +77,8 @@ public class SlimFileContext implements FileChangeListener {
 		}
 		return nextFiles.iterator().next();
 	}
+
+	public int getFileCount() {
+		return files.size();
+	}
 }

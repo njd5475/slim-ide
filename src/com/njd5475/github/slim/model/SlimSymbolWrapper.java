@@ -67,4 +67,8 @@ public class SlimSymbolWrapper implements SlimRenderable {
 		System.out.println("Inserting character at " + i);
 		symbols.insert(i, keyChar);
 	}
+
+	public void removeCharacterAt(int abs) {
+		symbols.deleteCharAt(abs);
+	}
 }

@@ -7,20 +7,23 @@ import java.awt.Graphics2D;
 import java.awt.GraphicsEnvironment;
 import java.awt.RenderingHints;
 import java.awt.RenderingHints.Key;
-import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.event.MouseWheelEvent;
 import java.awt.event.MouseWheelListener;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 
 import javax.swing.JPanel;
 
 import com.njd5475.github.slim.controller.SlimController;
+import com.njd5475.github.slim.model.SlimFileWrapper;
 
 public class SlimEditor extends JPanel {
 
+	private Set<EditorListener>							listeners			= new HashSet<EditorListener>();
 	private SlimController									controller;
 	private int															margin				= 10;
 	private int															lineHeight		= 15;
@@ -29,8 +32,11 @@ public class SlimEditor extends JPanel {
 	private double													scrollOffsetY	= 0;
 	private Color														background		= Color.white;
 	private Map<RenderingHints.Key, Object>	renderingHints;
-	private int cursorLine;
-	private int cursorColumn;
+	private int															cursorLine;
+	private int															cursorColumn;
+	private Set<SlimFileWrapper>						filesShown		= new HashSet<SlimFileWrapper>();
+	private int															minLine;
+	private int															maxLine;
 
 	public SlimEditor(SlimSettings defaults, SlimController controller) {
 		this.setPreferredSize(defaults.getWindowDimensions());
@@ -51,80 +57,100 @@ public class SlimEditor extends JPanel {
 				double rot = e.getWheelRotation();
 				scrollOffsetY -= lineHeight * rot * 2;
 				scrollOffsetY = Math.min(0, scrollOffsetY);
-				if (Math.abs(scrollOffsetY) + getHeight() > getMaxHeight()+getLineHeight()) {
-					scrollOffsetY = -(getMaxHeight() - getHeight()+getLineHeight());
+				if (Math.abs(scrollOffsetY) + getHeight() > getMaxHeight() + getLineHeight()) {
+					scrollOffsetY = -(getMaxHeight() - getHeight() + getLineHeight());
 				}
+				calcLinesShown();
 				repaint();
 			}
 		});
 		this.addKeyListener(new KeyListener() {
-			
+
 			@Override
 			public void keyTyped(KeyEvent e) {
-				// TODO Auto-generated method stub
-				
-			}
-			
-			@Override
-			public void keyPressed(KeyEvent e) {
-				boolean isChar = false;
-				if(e.getKeyCode() == KeyEvent.VK_RIGHT) {
-					cursorColumn++;
-				}else if(e.getKeyCode() == KeyEvent.VK_LEFT) {
-					cursorColumn--;
-				}else if(e.getKeyCode() == KeyEvent.VK_UP) {
-					cursorLine--;
-				}else if(e.getKeyCode() == KeyEvent.VK_DOWN) {
-					cursorLine++;
-				} else if(e.getKeyCode() == KeyEvent.VK_T && e.isAltDown()) {
-					if (SlimIDE.DEVELOPMENT) {
-						SlimIDE.takeScreenshot();
-					}
-				}else{
-					isChar = true;
-				}
-				
-				clampCursor();
-				
-				if(isChar) {
+				if (e.getKeyCode() != 0) {
 					SlimEditor.this.controller.addCharacterAt(e.getKeyChar(), cursorLine, cursorColumn);
 					cursorColumn++;
 					clampCursor();
+					SlimEditor.this.repaint();
 				}
-				
+			}
+
+			@Override
+			public void keyPressed(KeyEvent e) {
+				if (e.getKeyCode() == KeyEvent.VK_RIGHT) {
+					cursorColumn++;
+				} else if (e.getKeyCode() == KeyEvent.VK_LEFT) {
+					cursorColumn--;
+				} else if (e.getKeyCode() == KeyEvent.VK_UP) {
+					cursorLine--;
+				} else if (e.getKeyCode() == KeyEvent.VK_DOWN) {
+					cursorLine++;
+				} else if (e.getKeyCode() == KeyEvent.VK_T && e.isAltDown()) {
+					if (SlimIDE.DEVELOPMENT) {
+						SlimIDE.takeScreenshot();
+					}
+				} else if (e.getKeyCode() == KeyEvent.VK_DELETE) {
+					SlimEditor.this.controller.removeCharacterAt(cursorLine, cursorColumn);
+				}
+
+				clampCursor();
+
 				SlimEditor.this.repaint();
 			}
-			
+
 			@Override
 			public void keyReleased(KeyEvent e) {
 				// TODO Auto-generated method stub
-				
+
 			}
 		});
 		this.setBackground(background);
 		refreshRenderingHints();
 	}
 
+	protected void calcLinesShown() {
+		double scrollY = Math.abs(scrollOffsetY);
+		minLine = (int)Math.floor(scrollY / getLineHeight());
+		maxLine = (int)Math.ceil((scrollY + getHeight()) / getLineHeight());
+		Set<SlimFileWrapper> nowShown = controller.getFilesForLines(minLine, maxLine);
+		if (!nowShown.containsAll(filesShown) || nowShown.size() != filesShown.size()) {
+			// it's changed so update and notify
+			filesShown = nowShown;
+			notifyListenersFilesShownChanged(filesShown);
+		}
+	}
+
+	private void notifyListenersFilesShownChanged(Set<SlimFileWrapper> filesShown2) {
+		for(EditorListener l : listeners) {
+			l.filesShownChanged(filesShown2);
+		}
+	}
+
+	public void addEditorListener(EditorListener listener) {
+		listeners.add(listener);
+	}
+
 	protected void clampCursor() {
-		if(cursorLine > SlimEditor.this.controller.getTotalLines()) {
+		if (cursorLine > SlimEditor.this.controller.getTotalLines()) {
 			cursorLine = SlimEditor.this.controller.getTotalLines();
 		}
-		
-		if(cursorLine < 0) {
+
+		if (cursorLine < 0) {
 			cursorLine = 0;
 		}
-		
-		if(cursorColumn > SlimEditor.this.controller.getLineLength(cursorLine)) {
+
+		if (cursorColumn > SlimEditor.this.controller.getLineLength(cursorLine)) {
 			cursorLine++;
-			if(cursorLine > SlimEditor.this.controller.getTotalLines()) {
+			if (cursorLine > SlimEditor.this.controller.getTotalLines()) {
 				cursorLine = SlimEditor.this.controller.getTotalLines();
 			}
 			cursorColumn = 0;
 		}
-		
-		if(cursorColumn < 0) {
+
+		if (cursorColumn < 0) {
 			cursorLine--;
-			if(cursorLine < 0) {
+			if (cursorLine < 0) {
 				cursorLine = 0;
 			}
 			cursorColumn = SlimEditor.this.controller.getLineLength(cursorLine);
@@ -162,11 +188,11 @@ public class SlimEditor extends JPanel {
 	public SlimController getController() {
 		return controller;
 	}
-	
+
 	public int getCusorLine() {
 		return cursorLine;
 	}
-	
+
 	public int getCursorColumn() {
 		return cursorColumn;
 	}
@@ -180,7 +206,7 @@ public class SlimEditor extends JPanel {
 	}
 
 	public int getMaxHeight() {
-		return getLineHeight() * getTotalNumberOfLines();
+		return getLineHeight() * getTotalNumberOfLines() + getLineHeight() * controller.getTotalFileCount();
 	}
 
 	private int getTotalNumberOfLines() {

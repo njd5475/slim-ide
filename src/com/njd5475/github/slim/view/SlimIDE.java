@@ -9,12 +9,14 @@ import java.awt.event.KeyEvent;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+import java.util.Set;
 
 import javax.imageio.ImageIO;
 import javax.swing.JFrame;
 
 import com.njd5475.github.slim.controller.SlimController;
 import com.njd5475.github.slim.model.SlimFileContext;
+import com.njd5475.github.slim.model.SlimFileWrapper;
 
 public class SlimIDE {
 
@@ -36,6 +38,24 @@ public class SlimIDE {
 		DefaultAttachableRenderer renderer = new DefaultAttachableRenderer();
 		SlimController controller = new SlimController(renderer, fileContext);
 		SlimEditor editor = new SlimEditor(defaults, controller);
+		editor.addEditorListener(new EditorListener() {
+			@Override
+			public void filesShownChanged(Set<SlimFileWrapper> filesShown2) {
+				String files = "";
+				int i = 0;
+				for(SlimFileWrapper file : filesShown2) {
+					if(i == 0) {
+						files += " - ";
+					}
+					files += file.getFile().getName();
+					if(i < filesShown2.size()-1) {
+						files += ", ";
+					}
+					++i;
+				}
+				frame.setTitle("SlimIDE " + files);
+			}			
+		});
 		frame.setLayout(new BorderLayout());
 		frame.add(editor);
 		frame.pack();

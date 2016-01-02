@@ -1,6 +1,8 @@
 package com.njd5475.github.slim.controller;
 
 import java.util.Collection;
+import java.util.HashSet;
+import java.util.Set;
 
 import com.njd5475.github.slim.model.SlimFileContext;
 import com.njd5475.github.slim.model.SlimFileWrapper;
@@ -42,7 +44,7 @@ public class SlimController implements FileChangeListener {
 
 	public int getLineLength(int cursorLine) {
 		SlimLineWrapper line = getLine(cursorLine);
-		if(line != null) {
+		if (line != null) {
 			return line.length();
 		}
 		return 0;
@@ -54,17 +56,47 @@ public class SlimController implements FileChangeListener {
 	}
 
 	public SlimLineWrapper getLine(int linenum) {
-		int totalLinesReached = 0, lastTotal= 0;
+		int totalLinesReached = 0, lastTotal = 0;
 		for (SlimFileWrapper file : this.fileContext.getFiles()) {
 			Collection<SlimLineWrapper> lines = file.getLines();
 			lastTotal = totalLinesReached;
 			totalLinesReached += lines.size();
-			if(linenum < totalLinesReached) {
+			if (linenum < totalLinesReached) {
 				SlimLineWrapper[] array = lines.toArray(new SlimLineWrapper[lines.size()]);
-				return array[linenum-lastTotal];
+				return array[linenum - lastTotal];
 			}
 		}
 		return null;
 	}
-	
+
+	public void removeCharacterAt(int cursorLine, int cursorColumn) {
+		SlimLineWrapper line = getLine(cursorLine);
+		line.removeCharacterAt(cursorColumn);
+		if (line.length() == 0) {
+			removeLine(cursorLine);
+		}
+	}
+
+	private void removeLine(int cursorLine) {
+
+	}
+
+	public Set<SlimFileWrapper> getFilesForLines(int startLine, int endLine) {
+		Set<SlimFileWrapper> files = new HashSet<SlimFileWrapper>();
+		int fileEnd = 0, fileStart = 0;
+		for (SlimFileWrapper file : this.fileContext.getFiles()) {
+			Collection<SlimLineWrapper> lines = file.getLines();
+			fileStart = fileEnd;
+			fileEnd += lines.size();
+			if ((fileStart > startLine && fileStart < endLine) || (fileEnd > startLine && fileEnd < endLine)
+					|| (startLine > fileStart && startLine < fileEnd) || (endLine > fileStart && endLine < fileEnd)) {
+				files.add(file);
+			}
+		}
+		return files;
+	}
+
+	public int getTotalFileCount() {
+		return fileContext.getFileCount();
+	}
 }

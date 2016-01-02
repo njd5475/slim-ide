@@ -50,7 +50,7 @@ public class SlimFileWrapper {
 				String line = null;
 				int lineNo = 0;
 				while ((line = buffr.readLine()) != null) {
-					lines.add(new SlimLineWrapper(++lineNo, line, this));
+					lines.add(new SlimLineWrapper(++lineNo, line + "\n", this));
 				}
 				buffr.close();
 			} catch (FileNotFoundException e) {

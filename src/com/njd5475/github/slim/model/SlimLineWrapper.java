@@ -68,4 +68,25 @@ public class SlimLineWrapper implements SlimRenderable, Comparable<SlimLineWrapp
 		return builder.toString();
 	}
 
+	public void removeCharacterAt(int cursorColumn) {
+		int totalCharsReached = 0, lastCharsTotal = 0;
+		SlimSymbolWrapper removeSymbol = null;
+		for(SlimSymbolWrapper symbol : symbols) {
+			lastCharsTotal = totalCharsReached;
+			totalCharsReached += symbol.length();
+			if(cursorColumn <= totalCharsReached) {
+				symbol.removeCharacterAt(Math.abs(cursorColumn - lastCharsTotal));
+				if(symbol.length() == 0) {
+					removeSymbol = symbol;
+				}				
+				break;
+			}
+		}
+		if(removeSymbol != null) {
+			symbols.remove(removeSymbol);
+		}
+		//rebuild original line
+		originalLine = calcLine();
+	}
+
 }

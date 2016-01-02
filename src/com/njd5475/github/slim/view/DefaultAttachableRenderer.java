@@ -126,7 +126,6 @@ public class DefaultAttachableRenderer implements SlimRenderVisitor {
 	public void render(SlimSymbolWrapper symbol) {
 
 		char[] symChars = symbol.toString().toCharArray();
-		Color originalBackground = lineOnly.getBackground();
 		for (char c : symChars) {
 			if (currentChar == cursorColumn && currentLine == cursorLine) {
 				Graphics2D block = (Graphics2D) lineOnly.create();
