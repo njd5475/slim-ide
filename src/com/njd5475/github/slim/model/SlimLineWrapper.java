@@ -2,6 +2,7 @@ package com.njd5475.github.slim.model;
 
 import java.util.Set;
 
+import com.njd5475.github.slim.controller.SlimEditContext;
 import com.njd5475.github.slim.view.SlimRenderVisitor;
 import com.njd5475.github.slim.view.SlimRenderable;
 
@@ -18,7 +19,7 @@ public class SlimLineWrapper implements SlimRenderable, Comparable<SlimLineWrapp
 		this.originalLine = line;
 		this.symbols = SlimSymbolWrapper.build(this);
 	}
-	
+
 	public SlimFileWrapper getFile() {
 		return file;
 	}
@@ -46,51 +47,82 @@ public class SlimLineWrapper implements SlimRenderable, Comparable<SlimLineWrapp
 	}
 
 	public int length() {
-		//TODO: does not handle modifications
+		// TODO: does not handle modifications
 		return originalLine.length();
 	}
 
 	public void addCharacterAt(char keyChar, int cursorColumn) {
 		int totalCharsReached = 0, lastCharsTotal = 0;
-		for(SlimSymbolWrapper symbol : symbols) {
+		for (SlimSymbolWrapper symbol : symbols) {
 			lastCharsTotal = totalCharsReached;
 			totalCharsReached += symbol.length();
-			if(cursorColumn <= totalCharsReached) {
+			if (cursorColumn <= totalCharsReached) {
 				symbol.addCharacterAt(keyChar, Math.abs(cursorColumn - lastCharsTotal));
 				break;
 			}
 		}
-		//rebuild original line
+		// rebuild original line
 		originalLine = calcLine();
 	}
 
 	private String calcLine() {
 		StringBuilder builder = new StringBuilder("");
-		for(SlimSymbolWrapper sym : symbols) {
+		for (SlimSymbolWrapper sym : symbols) {
 			builder.append(sym.toString());
 		}
 		return builder.toString();
 	}
 
-	public void removeCharacterAt(int cursorColumn) {
+	public void removeCharacterAt(int cursorColumn, SlimEditContext editContext) {
 		int totalCharsReached = 0, lastCharsTotal = 0;
-		SlimSymbolWrapper removeSymbol = null;
-		for(SlimSymbolWrapper symbol : symbols) {
+		for (SlimSymbolWrapper symbol : symbols) {
 			lastCharsTotal = totalCharsReached;
 			totalCharsReached += symbol.length();
-			if(cursorColumn <= totalCharsReached) {
-				symbol.removeCharacterAt(Math.abs(cursorColumn - lastCharsTotal));
-				if(symbol.length() == 0) {
-					removeSymbol = symbol;
+			if (cursorColumn < totalCharsReached) {
+				try {
+					symbol.removeCharacterAt(Math.abs(cursorColumn - lastCharsTotal), editContext);
+					if (symbol.length() == 0) {
+						editContext.delete(symbol);
+					}
+				} catch (StringIndexOutOfBoundsException e) {
+					System.err.println("String out of bounds");
 				}
 				break;
 			}
 		}
-		if(removeSymbol != null) {
-			symbols.remove(removeSymbol);
-		}
-		//rebuild original line
+		// rebuild original line
 		originalLine = calcLine();
+	}
+
+	public void removeSymbol(SlimSymbolWrapper symbol) {
+		symbols.remove(symbol);
+	}
+
+	public int getLineNumber() {
+		return lineNum;
+	}
+
+	public void join(SlimLineWrapper line2) {
+		if(line2 == null) {
+			throw new NullPointerException("You cannot join to a non-existant line");
+		}
+		
+		if (file == line2.file) {
+			this.originalLine += line2.originalLine;
+			this.symbols = SlimSymbolWrapper.build(this); // rebuild the symbols
+			// delete line 2
+			line2.getFile().remove(line2);
+		}
+	}
+
+	public boolean isEmpty() {
+		return this.symbols.isEmpty();
+	}
+
+	public void lineDeleted(SlimLineWrapper line) {
+		if(this.file == line.file && this.lineNum > line.lineNum) {
+			this.lineNum--;
+		}
 	}
 
 }

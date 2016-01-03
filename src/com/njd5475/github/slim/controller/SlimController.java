@@ -71,10 +71,9 @@ public class SlimController implements FileChangeListener {
 
 	public void removeCharacterAt(int cursorLine, int cursorColumn) {
 		SlimLineWrapper line = getLine(cursorLine);
-		line.removeCharacterAt(cursorColumn);
-		if (line.length() == 0) {
-			removeLine(cursorLine);
-		}
+		SlimEditContext editContext = new SlimEditContext();
+		line.removeCharacterAt(cursorColumn, editContext);
+		editContext.apply(line.getFile());
 	}
 
 	private void removeLine(int cursorLine) {

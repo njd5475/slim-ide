@@ -5,10 +5,14 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
-import java.util.Arrays;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
 import java.util.Set;
+import java.util.TreeMap;
 import java.util.TreeSet;
 
 import com.njd5475.github.slim.controller.FileChangeListener;
@@ -16,10 +20,10 @@ import com.njd5475.github.slim.view.SlimRenderVisitor;
 
 public class SlimFileWrapper {
 
-	private File										file;
-	private Set<FileChangeListener>	listeners	= new HashSet<FileChangeListener>();
-	private Set<SlimLineWrapper>		lines			= new TreeSet<SlimLineWrapper>();
-	private boolean									loaded		= false;
+	private File													file;
+	private Set<FileChangeListener>				listeners	= new HashSet<FileChangeListener>();
+	private Map<Integer, SlimLineWrapper>	lines			= new TreeMap<Integer, SlimLineWrapper>();
+	private boolean												loaded		= false;
 
 	public SlimFileWrapper(File file) {
 		this.file = file;
@@ -39,7 +43,7 @@ public class SlimFileWrapper {
 
 	public Collection<SlimLineWrapper> getLines() {
 		load();
-		return lines;
+		return lines.values();
 	}
 
 	private void load() {
@@ -49,8 +53,10 @@ public class SlimFileWrapper {
 				BufferedReader buffr = new BufferedReader(new FileReader(file), 4096);
 				String line = null;
 				int lineNo = 0;
+				SlimLineWrapper wrapper;
 				while ((line = buffr.readLine()) != null) {
-					lines.add(new SlimLineWrapper(++lineNo, line + "\n", this));
+					wrapper = new SlimLineWrapper(++lineNo, line + "\n", this);
+					lines.put(wrapper.getLineNumber(), wrapper);
 				}
 				buffr.close();
 			} catch (FileNotFoundException e) {
@@ -62,15 +68,15 @@ public class SlimFileWrapper {
 			loaded = true;
 		}
 	}
-	
+
 	public File getFile() {
 		return file;
 	}
-	
+
 	public Set<File> getNext() {
 		Set<File> nextFiles = new TreeSet<File>();
-		for(File f : file.getParentFile().listFiles()) {
-			if(f.isFile() && !f.isHidden()) {
+		for (File f : file.getParentFile().listFiles()) {
+			if (f.isFile() && !f.isHidden()) {
 				nextFiles.add(f);
 			}
 		}
@@ -82,7 +88,18 @@ public class SlimFileWrapper {
 	}
 
 	public void remove(SlimLineWrapper line) {
-		lines.remove(line);
+		int lineNum = line.getLineNumber();
+		lines.remove(line.getLineNumber());
+		for (int i = lineNum+1; i < getLineCount(); ++i) {
+			SlimLineWrapper lineToMove = lines.get(i);
+			lineToMove.lineDeleted(line);
+			lines.put(i-1, lineToMove);
+		}
+		
 	}
-	
+
+	public SlimLineWrapper getLine(int i) {
+		return lines.get(i);
+	}
+
 }

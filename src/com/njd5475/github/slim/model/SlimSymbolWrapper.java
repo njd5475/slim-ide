@@ -3,6 +3,7 @@ package com.njd5475.github.slim.model;
 import java.util.LinkedHashSet;
 import java.util.Set;
 
+import com.njd5475.github.slim.controller.SlimEditContext;
 import com.njd5475.github.slim.view.SlimRenderVisitor;
 import com.njd5475.github.slim.view.SlimRenderable;
 
@@ -29,6 +30,8 @@ public class SlimSymbolWrapper implements SlimRenderable {
 	private static String getType(char c) {
 		if (c == ' ' || c == '\t') {
 			return "space";
+		} else if (c == '\n' || c == '\r') {
+			return "line-ending";
 		} else if (c >= '0' || c <= '9') {
 			return "number";
 		} else if ((c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z')) {
@@ -59,6 +62,10 @@ public class SlimSymbolWrapper implements SlimRenderable {
 		return symbols;
 	}
 
+	public SlimLineWrapper getLine() {
+		return line;
+	}
+
 	public int length() {
 		return symbols.length();
 	}
@@ -68,7 +75,18 @@ public class SlimSymbolWrapper implements SlimRenderable {
 		symbols.insert(i, keyChar);
 	}
 
-	public void removeCharacterAt(int abs) {
-		symbols.deleteCharAt(abs);
+	public void removeCharacterAt(int abs, SlimEditContext editContext) {
+		if ("line-ending".equals(symbolType)) {
+			editContext.joinNextLine(this);
+		} else {
+			if (symbols.length() > 0) {
+				symbols.deleteCharAt(abs);
+				if (symbols.length() == 0) {
+					editContext.delete(this);
+				}
+			} else {
+				System.err.println("Symbol is empty");
+			}
+		}
 	}
 }
