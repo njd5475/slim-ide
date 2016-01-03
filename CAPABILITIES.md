@@ -16,3 +16,4 @@
 * Capability for the user to open files on click from the current directory if no files are opened from the command line.
 * Capability for the user to scroll using the cursor line if the user moves the cursor outside of the visible area the scroll offset should adjust to display the current line.
 * Capability for the user to move the cursor from the beginning of the line to the end of the line.
+* Capability for the user to control whether or not line wrapping is turned on or horizontal scrolling will be used. If line wrapping is used then any line with characters beyond the width of the window will be placed on a non counted extra line and be part of the editors total height. If no line wrapping then a horizontal scroll bar will be used to allow the user to move the view to display the additional characters.
