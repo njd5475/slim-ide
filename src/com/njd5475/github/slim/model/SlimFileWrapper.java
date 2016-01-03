@@ -80,5 +80,9 @@ public class SlimFileWrapper {
 	public int getLineCount() {
 		return lines.size();
 	}
+
+	public void remove(SlimLineWrapper line) {
+		lines.remove(line);
+	}
 	
 }

@@ -18,6 +18,10 @@ public class SlimLineWrapper implements SlimRenderable, Comparable<SlimLineWrapp
 		this.originalLine = line;
 		this.symbols = SlimSymbolWrapper.build(this);
 	}
+	
+	public SlimFileWrapper getFile() {
+		return file;
+	}
 
 	public int getHashCode() {
 		return (originalLine + file.hashCode() + lineNum).hashCode();
@@ -78,7 +82,7 @@ public class SlimLineWrapper implements SlimRenderable, Comparable<SlimLineWrapp
 				symbol.removeCharacterAt(Math.abs(cursorColumn - lastCharsTotal));
 				if(symbol.length() == 0) {
 					removeSymbol = symbol;
-				}				
+				}
 				break;
 			}
 		}

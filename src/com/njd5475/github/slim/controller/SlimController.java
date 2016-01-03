@@ -78,7 +78,9 @@ public class SlimController implements FileChangeListener {
 	}
 
 	private void removeLine(int cursorLine) {
-
+		this.numberOfLines--;
+		SlimLineWrapper line = getLine(cursorLine);
+		line.getFile().remove(line);
 	}
 
 	public Set<SlimFileWrapper> getFilesForLines(int startLine, int endLine) {
