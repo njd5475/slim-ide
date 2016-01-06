@@ -93,13 +93,17 @@ public class DefaultAttachableRenderer implements SlimRenderVisitor {
 		currentLine = 0;
 		cursorColumn = slimEditor.getCursorColumn();
 		cursorLine = slimEditor.getCusorLine();
-		for (SlimFileWrapper wrapper : context.getFiles()) {
-			wrapper.render(this);
-			g.translate(0, (wrapper.getLineCount()*lineHeight)+lineHeight+maxDescent);
-		}
 		String nextFile = String.format("Next File: %s", context.getNextFile());
 		int totalWidth = g.getClipBounds().width - margin;
 		int strWidth = g.getFontMetrics().stringWidth(nextFile);
+		if(context.hasFiles()) {
+			for (SlimFileWrapper wrapper : context.getFiles()) {
+				wrapper.render(this);
+				g.translate(0, (wrapper.getLineCount()*lineHeight)+lineHeight+maxDescent);
+			}
+		}else{
+			g.drawString(nextFile, totalWidth/2-strWidth/2, g.getClipBounds().height/2 - lineHeight - maxDescent);
+		}
 		g.drawString(nextFile, totalWidth - strWidth, lineHeight - maxDescent);
 		long end = System.currentTimeMillis() - start;
 		// System.out.println("Render took " + end + "ms");

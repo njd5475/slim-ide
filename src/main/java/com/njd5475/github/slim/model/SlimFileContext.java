@@ -50,6 +50,10 @@ public class SlimFileContext implements FileChangeListener {
 		return files;
 	}
 
+	public boolean hasFiles() {
+		return files.size() > 0;
+	}
+
 	@Override
 	public void onNewFileLoaded(SlimFileWrapper newFile) {
 
@@ -63,7 +67,7 @@ public class SlimFileContext implements FileChangeListener {
 		for (SlimFileWrapper file : files) {
 			nextFiles.remove(file.getFile());
 		}
-		if (nextFiles.isEmpty()) {
+		if (nextFiles.isEmpty() && !files.isEmpty()) {
 			File parentDir = files.iterator().next().getFile().getParentFile();
 			for (File dirsInParent : parentDir.listFiles()) {
 				if (dirsInParent.isDirectory() && dirsInParent.listFiles().length > 0) {
@@ -72,6 +76,14 @@ public class SlimFileContext implements FileChangeListener {
 							nextFiles.add(maybe);
 						}
 					}
+				}
+			}
+		}
+		if(nextFiles.isEmpty() && files.isEmpty()) {
+			File currentDir = new File(".");
+			for(File maybe : currentDir.listFiles()) {
+				if(maybe.isFile()) {
+					nextFiles.add(maybe);
 				}
 			}
 		}

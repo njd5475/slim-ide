@@ -49,6 +49,9 @@ public class SlimEditor extends JPanel {
 				break;
 			}
 		}
+		if(useMe == null) {
+			useMe = fonts[0];
+		}
 		useMe = useMe.deriveFont(12f).deriveFont(Font.PLAIN);
 		this.setFont(useMe);
 		this.addMouseWheelListener(new MouseWheelListener() {
