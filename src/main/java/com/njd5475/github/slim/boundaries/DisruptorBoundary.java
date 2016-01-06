@@ -18,11 +18,11 @@ public class DisruptorBoundary {
 
 	public static void loadDisruptorCallback() {
 		Disruptor<FileChangeEvent> disruptor = new Disruptor<FileChangeEvent>(FileChangeEvent.EVENT_FACTORY, 10, EXECUTOR);
-		EventHandler<? super FileChangeEvent> handler1 = null;
-		EventHandler<? super FileChangeEvent> handler2 = null;
-		EventHandler<? super FileChangeEvent> handler3 = null;
-		EventHandler<? super FileChangeEvent> handler4 = null;
-		disruptor.handleEventsWith(handler1, handler2, handler3, handler4);
+		EventHandler<FileChangeEvent> handler1 = null;
+		EventHandler<FileChangeEvent> handler2 = null;
+		EventHandler<FileChangeEvent> handler3 = null;
+		EventHandler<FileChangeEvent> handler4 = null;
+		disruptor.handleEventsWith(handler1,handler2,handler3,handler4);
 		RingBuffer<FileChangeEvent> ringBuffer = disruptor.start();
 	}
 
