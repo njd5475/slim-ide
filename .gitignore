@@ -102,3 +102,14 @@ com_crashlytics_export_strings.xml
 crashlytics.properties
 crashlytics-build.properties
 fabric.properties
+
+
+#Gradle
+.gradletasknamecache
+.gradle/
+build/
+bin/
+gradle/
+gradlew
+gradlew.bat
+.DS_Store
