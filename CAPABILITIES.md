@@ -11,6 +11,7 @@
 
 ## Missing Capabilities (in priority order)
 
+* Capability for the user to choose to create a new file with a single click if the file they passed to the program to open does not exist and the capability for the user to choose to create all parent directories for new files that do not exist.
 * Capability for code to recursively index any directory into an in memory master list as quickly as possible.
 * Capability for code to determine what nearest directory is a code project directory.
 * Capability for the user to be able to insert new characters and delete existing ones and save the changes.
