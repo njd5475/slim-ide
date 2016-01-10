@@ -110,6 +110,4 @@ fabric.properties
 build/
 bin/
 gradle/
-gradlew
-gradlew.bat
 .DS_Store

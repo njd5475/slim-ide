@@ -8,6 +8,7 @@ import java.util.Set;
 import java.util.TreeSet;
 
 import com.njd5475.github.slim.controller.FileChangeListener;
+import com.njd5475.github.slim.controller.SlimDirectoryEnumerator;
 
 public class SlimFileContext implements FileChangeListener {
 
@@ -31,6 +32,7 @@ public class SlimFileContext implements FileChangeListener {
 				System.out.println("Invalid file name '" + arg + "'");
 			}
 		}
+		SlimDirectoryEnumerator.main(args);
 	}
 
 	public void addNewFile(File file) {

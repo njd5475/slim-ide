@@ -14,7 +14,6 @@ public class SlimEditContext {
 	private Set<SlimLineWrapper>		joinNextLine	= new HashSet<SlimLineWrapper>();
 
 	public SlimEditContext() {
-		// TODO Auto-generated constructor stub
 	}
 
 	public void delete(SlimSymbolWrapper sym) {

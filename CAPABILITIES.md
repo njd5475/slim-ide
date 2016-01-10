@@ -11,6 +11,7 @@
 
 ## Missing Capabilities (in priority order)
 
+* Capability for code to recursively index any directory into an in memory master list as quickly as possible.
 * Capability for code to determine what nearest directory is a code project directory.
 * Capability for the user to be able to insert new characters and delete existing ones and save the changes.
 * Capability for the user to know where the current scroll position is so they know approximately how far through the current number of lines they are.
