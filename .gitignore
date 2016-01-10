@@ -4,7 +4,6 @@
 .mtj.tmp/
 
 # Package Files #
-*.jar
 *.war
 *.ear
 
@@ -109,5 +108,4 @@ fabric.properties
 .gradle/
 build/
 bin/
-gradle/
 .DS_Store
