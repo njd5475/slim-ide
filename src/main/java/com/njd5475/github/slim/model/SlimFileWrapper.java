@@ -50,15 +50,17 @@ public class SlimFileWrapper {
 		if (!loaded) {
 			long start = System.currentTimeMillis();
 			try {
-				BufferedReader buffr = new BufferedReader(new FileReader(file), 4096);
-				String line = null;
-				int lineNo = 0;
-				SlimLineWrapper wrapper;
-				while ((line = buffr.readLine()) != null) {
-					wrapper = new SlimLineWrapper(++lineNo, line + "\n", this);
-					lines.put(wrapper.getLineNumber(), wrapper);
+				if (file.exists()) {
+					BufferedReader buffr = new BufferedReader(new FileReader(file), 4096);
+					String line = null;
+					int lineNo = 0;
+					SlimLineWrapper wrapper;
+					while ((line = buffr.readLine()) != null) {
+						wrapper = new SlimLineWrapper(++lineNo, line + "\n", this);
+						lines.put(wrapper.getLineNumber(), wrapper);
+					}
+					buffr.close();
 				}
-				buffr.close();
 			} catch (FileNotFoundException e) {
 				e.printStackTrace();
 			} catch (IOException e) {
@@ -75,9 +77,11 @@ public class SlimFileWrapper {
 
 	public Set<File> getNext() {
 		Set<File> nextFiles = new TreeSet<File>();
-		for (File f : file.getParentFile().listFiles()) {
-			if (f.isFile() && !f.isHidden()) {
-				nextFiles.add(f);
+		if (file.exists()) {
+			for (File f : file.getParentFile().listFiles()) {
+				if (f.isFile() && !f.isHidden()) {
+					nextFiles.add(f);
+				}
 			}
 		}
 		return nextFiles;
@@ -90,12 +94,12 @@ public class SlimFileWrapper {
 	public void remove(SlimLineWrapper line) {
 		int lineNum = line.getLineNumber();
 		lines.remove(line.getLineNumber());
-		for (int i = lineNum+1; i < getLineCount(); ++i) {
+		for (int i = lineNum + 1; i < getLineCount(); ++i) {
 			SlimLineWrapper lineToMove = lines.get(i);
 			lineToMove.lineDeleted(line);
-			lines.put(i-1, lineToMove);
+			lines.put(i - 1, lineToMove);
 		}
-		
+
 	}
 
 	public SlimLineWrapper getLine(int i) {

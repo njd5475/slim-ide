@@ -71,20 +71,22 @@ public class SlimFileContext implements FileChangeListener {
 		}
 		if (nextFiles.isEmpty() && !files.isEmpty()) {
 			File parentDir = files.iterator().next().getFile().getParentFile();
-			for (File dirsInParent : parentDir.listFiles()) {
-				if (dirsInParent.isDirectory() && dirsInParent.listFiles().length > 0) {
-					for (File maybe : dirsInParent.listFiles()) {
-						if (maybe.isFile()) {
-							nextFiles.add(maybe);
+			if (parentDir != null && parentDir.exists()) {
+				for (File dirsInParent : parentDir.listFiles()) {
+					if (dirsInParent.isDirectory() && dirsInParent.listFiles().length > 0) {
+						for (File maybe : dirsInParent.listFiles()) {
+							if (maybe.isFile()) {
+								nextFiles.add(maybe);
+							}
 						}
 					}
 				}
 			}
 		}
-		if(nextFiles.isEmpty() && files.isEmpty()) {
+		if (nextFiles.isEmpty() && files.isEmpty()) {
 			File currentDir = new File(".");
-			for(File maybe : currentDir.listFiles()) {
-				if(maybe.isFile()) {
+			for (File maybe : currentDir.listFiles()) {
+				if (maybe.isFile()) {
 					nextFiles.add(maybe);
 				}
 			}
