@@ -1,6 +1,7 @@
 package com.njd5475.github.slim.model;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.Collection;
 import java.util.Comparator;
 import java.util.HashSet;
@@ -8,7 +9,7 @@ import java.util.Set;
 import java.util.TreeSet;
 
 import com.njd5475.github.slim.controller.FileChangeListener;
-import com.njd5475.github.slim.controller.SlimDirectoryEnumerator;
+import com.njd5475.github.slim.controller.SlimDirectory;
 
 public class SlimFileContext implements FileChangeListener {
 
@@ -21,8 +22,10 @@ public class SlimFileContext implements FileChangeListener {
 
 																						});
 	private Set<FileChangeListener>	listeners	= new HashSet<FileChangeListener>();
+	private SlimDirectory directory;
 
 	public SlimFileContext(String[] args) {
+		directory = new SlimDirectory(new File("."));
 		// turn this into a list of files to load
 		for (String arg : args) {
 			File file = new File(arg);
@@ -32,7 +35,6 @@ public class SlimFileContext implements FileChangeListener {
 				System.out.println("Invalid file name '" + arg + "'");
 			}
 		}
-		SlimDirectoryEnumerator.main(args);
 	}
 
 	public void addNewFile(File file) {
@@ -62,37 +64,11 @@ public class SlimFileContext implements FileChangeListener {
 	}
 
 	public File getNextFile() {
-		Set<File> nextFiles = new TreeSet<File>();
-		for (SlimFileWrapper file : files) {
-			nextFiles.addAll(file.getNext());
-		}
-		for (SlimFileWrapper file : files) {
-			nextFiles.remove(file.getFile());
-		}
-		if (nextFiles.isEmpty() && !files.isEmpty()) {
-			File parentDir = files.iterator().next().getFile().getParentFile();
-			if (parentDir != null && parentDir.exists()) {
-				for (File dirsInParent : parentDir.listFiles()) {
-					if (dirsInParent.isDirectory() && dirsInParent.listFiles().length > 0) {
-						for (File maybe : dirsInParent.listFiles()) {
-							if (maybe.isFile()) {
-								nextFiles.add(maybe);
-							}
-						}
-					}
-				}
-			}
-		}
-		if (nextFiles.isEmpty() && files.isEmpty()) {
-			File currentDir = new File(".");
-			for (File maybe : currentDir.listFiles()) {
-				if (maybe.isFile()) {
-					nextFiles.add(maybe);
-				}
-			}
-		}
-		if (!nextFiles.isEmpty()) {
-			return nextFiles.iterator().next();
+		try {
+			return directory.listTen(".*\\w+\\.java.*")[0].getCanonicalFile();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
 		return null;
 	}
