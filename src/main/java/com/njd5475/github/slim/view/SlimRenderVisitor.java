@@ -18,4 +18,6 @@ public interface SlimRenderVisitor {
 
 	public void render(SlimSymbolWrapper slimSymbolWrapper);
 
+	public void render(SlimWidget slimWidget);
+
 }

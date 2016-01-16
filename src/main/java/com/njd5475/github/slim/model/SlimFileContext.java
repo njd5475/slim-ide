@@ -67,7 +67,6 @@ public class SlimFileContext implements FileChangeListener {
 		try {
 			return directory.listTen(".*\\w+\\.java.*")[0].getCanonicalFile();
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		return null;

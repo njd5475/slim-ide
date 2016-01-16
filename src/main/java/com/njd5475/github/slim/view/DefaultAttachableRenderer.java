@@ -152,4 +152,9 @@ public class DefaultAttachableRenderer implements SlimRenderVisitor {
 		// tabSpaces)), 0);
 	}
 
+	@Override
+	public void render(SlimWidget slimWidget) {
+		
+	}
+
 }
