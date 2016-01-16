@@ -5,11 +5,9 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.HashSet;
-import java.util.LinkedList;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
@@ -20,6 +18,8 @@ import com.njd5475.github.slim.view.SlimRenderVisitor;
 
 public class SlimFileWrapper {
 
+
+	private static final int FLUSH_RATE = 1000;
 	private File													file;
 	private Set<FileChangeListener>				listeners	= new HashSet<FileChangeListener>();
 	private Map<Integer, SlimLineWrapper>	lines			= new TreeMap<Integer, SlimLineWrapper>();
@@ -104,6 +104,23 @@ public class SlimFileWrapper {
 
 	public SlimLineWrapper getLine(int i) {
 		return lines.get(i);
+	}
+
+	public void save() throws IOException {
+		if(!file.exists()) {
+			file.createNewFile();
+		}
+		
+		PrintWriter pw = new PrintWriter(file);
+		int i = 0;
+		for(SlimLineWrapper line : lines.values()) {
+			pw.print(line.getLine());
+			if( (++i % FLUSH_RATE) == 0) {
+				pw.flush();
+			}		
+		}
+		pw.flush();
+		pw.close();
 	}
 
 }

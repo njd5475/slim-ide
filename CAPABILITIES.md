@@ -8,13 +8,14 @@
 * Capability for the user to have multiple files displayed simultaneously one after the other in the editor and be allowed to scroll between them.
 * Capability for the user to clear see where one file ends and another begins
 * Capability for the user to tell which file is currently visible
+* Capability for code to recursively index any directory into an in memory master list up to 10000 files as quickly as possible.
+* Capability for the user to be able to insert new characters and delete existing ones and save the changes.
 
 ## Missing Capabilities (in priority order)
 
+* Capability for the user to create new lines by pressing enter.
 * Capability for the user to choose to create a new file with a single click if the file they passed to the program to open does not exist and the capability for the user to choose to create all parent directories for new files that do not exist.
-* Capability for code to recursively index any directory into an in memory master list as quickly as possible.
 * Capability for code to determine what nearest directory is a code project directory.
-* Capability for the user to be able to insert new characters and delete existing ones and save the changes.
 * Capability for the user to know where the current scroll position is so they know approximately how far through the current number of lines they are.
 * Capability for the user to open files on click from the current directory if no files are opened from the command line.
 * Capability for the user to scroll using the cursor line if the user moves the cursor outside of the visible area the scroll offset should adjust to display the current line.

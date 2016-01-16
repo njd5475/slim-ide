@@ -1,5 +1,6 @@
 package com.njd5475.github.slim.controller;
 
+import java.io.IOException;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
@@ -99,5 +100,14 @@ public class SlimController implements FileChangeListener {
 
 	public int getTotalFileCount() {
 		return fileContext.getFileCount();
+	}
+
+	public void saveCurrentFile(int cursorLine) {
+		SlimLineWrapper line = this.getLine(cursorLine);
+		try {
+			line.getFile().save();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 	}
 }

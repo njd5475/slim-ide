@@ -93,6 +93,8 @@ public class SlimEditor extends JPanel {
 					if (SlimIDE.DEVELOPMENT) {
 						SlimIDE.takeScreenshot();
 					}
+				} else if (e.getKeyCode() == KeyEvent.VK_S && e.isControlDown()) {
+					getController().saveCurrentFile(cursorLine);
 				} else if (e.getKeyCode() == KeyEvent.VK_DELETE) {
 					SlimEditor.this.controller.removeCharacterAt(cursorLine, cursorColumn);
 				} else if (e.getKeyCode() == KeyEvent.VK_BACK_SPACE) {
