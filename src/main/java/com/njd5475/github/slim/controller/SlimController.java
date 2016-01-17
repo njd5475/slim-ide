@@ -110,4 +110,10 @@ public class SlimController implements FileChangeListener {
 			e.printStackTrace();
 		}
 	}
+
+	public void addLineAt(int cursorLine, int cursorColumn) {
+		SlimLineWrapper line = getLine(cursorLine);
+		line.getFile().addLineAt(line, cursorColumn);
+		this.numberOfLines++;
+	}
 }

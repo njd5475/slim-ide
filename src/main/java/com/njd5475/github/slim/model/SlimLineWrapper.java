@@ -124,5 +124,11 @@ public class SlimLineWrapper implements SlimRenderable, Comparable<SlimLineWrapp
 			this.lineNum--;
 		}
 	}
+	
+	public void lineInserted(SlimLineWrapper line) {
+		if(this.file == line.file && line.lineNum <= lineNum) {
+			this.lineNum++;
+		}
+	}
 
 }

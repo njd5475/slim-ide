@@ -18,12 +18,11 @@ import com.njd5475.github.slim.view.SlimRenderVisitor;
 
 public class SlimFileWrapper {
 
-
-	private static final int FLUSH_RATE = 1000;
+	private static final int							FLUSH_RATE	= 1000;
 	private File													file;
-	private Set<FileChangeListener>				listeners	= new HashSet<FileChangeListener>();
-	private Map<Integer, SlimLineWrapper>	lines			= new TreeMap<Integer, SlimLineWrapper>();
-	private boolean												loaded		= false;
+	private Set<FileChangeListener>				listeners		= new HashSet<FileChangeListener>();
+	private Map<Integer, SlimLineWrapper>	lines				= new TreeMap<Integer, SlimLineWrapper>();
+	private boolean												loaded			= false;
 
 	public SlimFileWrapper(File file) {
 		this.file = file;
@@ -94,7 +93,8 @@ public class SlimFileWrapper {
 	public void remove(SlimLineWrapper line) {
 		int lineNum = line.getLineNumber();
 		lines.remove(line.getLineNumber());
-		for (int i = lineNum + 1; i < getLineCount(); ++i) {
+		int totalLines = getLineCount();
+		for (int i = lineNum + 1; i < totalLines; ++i) {
 			SlimLineWrapper lineToMove = lines.get(i);
 			lineToMove.lineDeleted(line);
 			lines.put(i - 1, lineToMove);
@@ -107,20 +107,47 @@ public class SlimFileWrapper {
 	}
 
 	public void save() throws IOException {
-		if(!file.exists()) {
+		if (!file.exists()) {
 			file.createNewFile();
 		}
-		
+
 		PrintWriter pw = new PrintWriter(file);
 		int i = 0;
-		for(SlimLineWrapper line : lines.values()) {
+		for (SlimLineWrapper line : lines.values()) {
 			pw.print(line.getLine());
-			if( (++i % FLUSH_RATE) == 0) {
+			if ((++i % FLUSH_RATE) == 0) {
 				pw.flush();
-			}		
+			}
 		}
 		pw.flush();
 		pw.close();
+	}
+
+	public void addLineAt(SlimLineWrapper line, int cursorColumn) {
+		String before = line.getLine().substring(0, cursorColumn);
+		String after = line.getLine().substring(cursorColumn, line.getLine().length());
+		if(!before.endsWith("\n")) {
+			before += "\n";
+		}
+		SlimLineWrapper lineBefore = new SlimLineWrapper(line.getLineNumber(), before, this);
+		SlimLineWrapper lineAfter = new SlimLineWrapper(line.getLineNumber() + 1, after, this);
+		lines.put(lineBefore.getLineNumber(), lineBefore);
+		insertLine(lineAfter);
+	}
+
+	private void insertLine(SlimLineWrapper line) {
+		int lineNum = line.getLineNumber();
+		int totalLines = getLineCount();
+		Set<SlimLineWrapper> toUpdate = new HashSet<SlimLineWrapper>();
+		for (int i = lineNum; i <= totalLines; ++i) {
+			SlimLineWrapper current = lines.get(i);
+			toUpdate.add(current);
+			current.lineInserted(current);
+		}
+		for (SlimLineWrapper reinsert : toUpdate) {
+			lines.put(reinsert.getLineNumber(), reinsert);
+		}
+		lines.put(lineNum, line);
 	}
 
 }

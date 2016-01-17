@@ -49,7 +49,7 @@ public class SlimEditor extends JPanel {
 				break;
 			}
 		}
-		if(useMe == null) {
+		if (useMe == null) {
 			useMe = fonts[0];
 		}
 		useMe = useMe.deriveFont(12f).deriveFont(Font.PLAIN);
@@ -94,7 +94,11 @@ public class SlimEditor extends JPanel {
 						SlimIDE.takeScreenshot();
 					}
 				} else if (e.getKeyCode() == KeyEvent.VK_S && e.isControlDown()) {
-					getController().saveCurrentFile(cursorLine);
+					SlimEditor.this.controller.saveCurrentFile(cursorLine);
+				} else if (e.getKeyCode() == KeyEvent.VK_ENTER) {
+					SlimEditor.this.controller.addLineAt(cursorLine, cursorColumn);
+					cursorLine++;
+					cursorColumn = 0;
 				} else if (e.getKeyCode() == KeyEvent.VK_DELETE) {
 					SlimEditor.this.controller.removeCharacterAt(cursorLine, cursorColumn);
 				} else if (e.getKeyCode() == KeyEvent.VK_BACK_SPACE) {

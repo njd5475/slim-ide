@@ -10,10 +10,10 @@
 * Capability for the user to tell which file is currently visible
 * Capability for code to recursively index any directory into an in memory master list up to 10000 files as quickly as possible.
 * Capability for the user to be able to insert new characters and delete existing ones and save the changes.
+* Capability for the user to create new lines by pressing enter.
 
 ## Missing Capabilities (in priority order)
 
-* Capability for the user to create new lines by pressing enter.
 * Capability for the user to choose to create a new file with a single click if the file they passed to the program to open does not exist and the capability for the user to choose to create all parent directories for new files that do not exist.
 * Capability for code to determine what nearest directory is a code project directory.
 * Capability for the user to know where the current scroll position is so they know approximately how far through the current number of lines they are.
