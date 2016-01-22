@@ -65,7 +65,13 @@ public class SlimFileContext implements FileChangeListener {
 
 	public File getNextFile() {
 		try {
-			return directory.listTen(".*\\w+\\.java.*")[0].getCanonicalFile();
+      File ten[] = directory.listTen(".*\\w+\\.java.*");
+      if(ten != null && ten.length > 0) {
+        File next = ten[0];
+        if(next != null) {
+			    return next.getCanonicalFile();
+        }
+      }
 		} catch (IOException e) {
 			e.printStackTrace();
 		}

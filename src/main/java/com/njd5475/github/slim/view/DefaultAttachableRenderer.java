@@ -140,7 +140,11 @@ public class DefaultAttachableRenderer implements SlimRenderVisitor {
 			}
 			if (c != '\t') {
 				lineOnly.drawString(String.valueOf(c), 0, 0);
-				lineOnly.translate(widths[c], 0);
+        try {
+				  lineOnly.translate(widths[c], 0);
+        }catch(ArrayIndexOutOfBoundsException e) {
+          lineOnly.translate(25, 0);
+        }
 			} else {
 				lineOnly.translate(tabWidth * widths[' '], 0);
 			}
