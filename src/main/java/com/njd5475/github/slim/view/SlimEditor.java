@@ -89,6 +89,10 @@ public class SlimEditor extends JPanel {
 					cursorLine--;
 				} else if (e.getKeyCode() == KeyEvent.VK_DOWN) {
 					cursorLine++;
+				} else if (e.getKeyCode() == KeyEvent.VK_END) {
+					cursorColumn = SlimEditor.this.controller.getLineLength(cursorLine)-1;
+				} else if (e.getKeyCode() == KeyEvent.VK_HOME) {
+					cursorColumn = 0;
 				} else if (e.getKeyCode() == KeyEvent.VK_T && e.isAltDown()) {
 					if (SlimIDE.DEVELOPMENT) {
 						SlimIDE.takeScreenshot();
@@ -104,6 +108,13 @@ public class SlimEditor extends JPanel {
 				} else if (e.getKeyCode() == KeyEvent.VK_BACK_SPACE) {
 					if (cursorColumn > 0) {
 						SlimEditor.this.controller.removeCharacterAt(cursorLine, --cursorColumn);
+					} else {
+						if (cursorLine > 0) {
+							// fake it
+							--cursorLine;
+							cursorColumn = SlimEditor.this.controller.getLine(cursorLine).length() - 1;
+							SlimEditor.this.controller.removeCharacterAt(cursorLine, cursorColumn);
+						}
 					}
 				}
 
@@ -145,20 +156,20 @@ public class SlimEditor extends JPanel {
 	}
 
 	protected void clampCursor() {
-		if (cursorLine > SlimEditor.this.controller.getTotalLines()) {
-			cursorLine = SlimEditor.this.controller.getTotalLines();
-		}
+		SlimController ctrl = SlimEditor.this.controller;
 
 		if (cursorLine < 0) {
 			cursorLine = 0;
 		}
 
-		if (cursorColumn > SlimEditor.this.controller.getLineLength(cursorLine)) {
+		if (cursorColumn >= ctrl.getLineLength(cursorLine) && cursorLine < ctrl.getTotalLines()) {
 			cursorLine++;
-			if (cursorLine > SlimEditor.this.controller.getTotalLines()) {
-				cursorLine = SlimEditor.this.controller.getTotalLines();
-			}
 			cursorColumn = 0;
+		}
+		
+		if(cursorColumn >= ctrl.getLineLength(cursorLine) && cursorLine >= ctrl.getTotalLines()) {
+			cursorLine = ctrl.getTotalLines();
+			cursorColumn = ctrl.getLineLength(cursorLine);
 		}
 
 		if (cursorColumn < 0) {
@@ -166,7 +177,11 @@ public class SlimEditor extends JPanel {
 			if (cursorLine < 0) {
 				cursorLine = 0;
 			}
-			cursorColumn = SlimEditor.this.controller.getLineLength(cursorLine);
+			cursorColumn = ctrl.getLineLength(cursorLine) - 1;
+		}
+		
+		if (cursorLine >= ctrl.getTotalLines()) {
+			cursorLine = ctrl.getTotalLines()-1;
 		}
 	}
 

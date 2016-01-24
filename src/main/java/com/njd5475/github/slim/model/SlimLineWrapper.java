@@ -109,6 +109,7 @@ public class SlimLineWrapper implements SlimRenderable, Comparable<SlimLineWrapp
 		
 		if (file == line2.file) {
 			this.originalLine += line2.originalLine;
+			this.originalLine = this.originalLine.replaceAll("\n", "") + "\n";
 			this.symbols = SlimSymbolWrapper.build(this); // rebuild the symbols
 			// delete line 2
 			line2.getFile().remove(line2);

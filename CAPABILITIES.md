@@ -11,6 +11,7 @@
 * Capability for code to recursively index any directory into an in memory master list up to 10000 files as quickly as possible.
 * Capability for the user to be able to insert new characters and delete existing ones and save the changes.
 * Capability for the user to create new lines by pressing enter.
+* Capability of basic cursor navigation home bring cursor to beginning of the line end to the end of the current line, backspace removes the character before the cursor or joins the current line to the previous line if there is one.
 
 ## Missing Capabilities (in priority order)
 
