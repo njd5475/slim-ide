@@ -99,6 +99,8 @@ public class SlimEditor extends JPanel {
 					}
 				} else if (e.getKeyCode() == KeyEvent.VK_S && e.isControlDown()) {
 					SlimEditor.this.controller.saveCurrentFile(cursorLine);
+				} else if (e.getKeyCode() == KeyEvent.VK_O && e.isControlDown()) {
+          SlimEditor.this.controller.openNextFile();
 				} else if (e.getKeyCode() == KeyEvent.VK_ENTER) {
 					SlimEditor.this.controller.addLineAt(cursorLine, cursorColumn);
 					cursorLine++;

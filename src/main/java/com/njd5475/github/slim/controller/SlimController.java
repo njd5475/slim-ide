@@ -102,6 +102,10 @@ public class SlimController implements FileChangeListener {
 		return fileContext.getFileCount();
 	}
 
+  public void openNextFile() {
+    fileContext.openNextFile();
+  }
+
 	public void saveCurrentFile(int cursorLine) {
 		SlimLineWrapper line = this.getLine(cursorLine);
 		try {

@@ -76,7 +76,9 @@ public class DefaultAttachableRenderer implements SlimRenderVisitor {
 
 	@Override
 	public void refresh() {
-		this.component.repaint();
+    if(this.component != null) {
+		  this.component.repaint();
+    }
 	}
 
 	@Override
