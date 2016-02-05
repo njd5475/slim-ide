@@ -44,7 +44,8 @@ public class SlimEditor extends JPanel {
 		Font fonts[] = GraphicsEnvironment.getLocalGraphicsEnvironment().getAllFonts();
 		Font useMe = null;
 		for (Font font : fonts) {
-			if (font.getName().contains("Monospaced.plain")) {
+			if (font.getName().contains("Monospaced") || font.getName().contains("Monac")) {
+				System.out.println("Using: " + font.getName());
 				useMe = font;
 				break;
 			}
