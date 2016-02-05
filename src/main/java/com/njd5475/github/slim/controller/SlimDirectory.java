@@ -2,8 +2,12 @@ package com.njd5475.github.slim.controller;
 
 import java.io.File;
 import java.util.HashMap;
+import java.util.Set;
 import java.util.Map;
 import java.util.Stack;
+import java.util.Arrays;
+import java.util.HashSet;
+import java.io.IOException;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 public class SlimDirectory {
@@ -21,7 +25,11 @@ public class SlimDirectory {
 
 		if (file.exists()) {
 			// use absolute path
-			file = file.getAbsoluteFile();
+      try {
+			  file = file.getCanonicalFile();
+      }catch(IOException ioe) {
+          
+      }
 		}
 
 		startFile = file;
@@ -56,16 +64,20 @@ public class SlimDirectory {
 		}).start();
 	}
 
-	public File[] listTen(String match) {
+	public File[] listTen(String match, File[] exclude) {
 		File ten[] = new File[10];
 		int found = 0;
+    Set<File> excludeSet = new HashSet<File>(Arrays.asList(exclude));
 		for(Map.Entry<File, File> entry : listing.entrySet()) {
-			if(entry.getKey().getAbsolutePath().matches(match)) {
-				ten[found++] = entry.getKey();
-				if(found == ten.length) {
-					break;
-				}
-			}
+      try {
+        if(entry.getKey().getCanonicalPath().matches(match) && !excludeSet.contains(entry.getKey())) {
+          ten[found++] = entry.getKey();
+          if(found == ten.length) {
+            break;
+          }
+        }
+      }catch(IOException ioe) {
+      }
 		}
 		return ten;
 	}

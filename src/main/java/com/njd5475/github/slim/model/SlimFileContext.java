@@ -39,11 +39,13 @@ public class SlimFileContext implements FileChangeListener {
 
 	public void addNewFile(File file) {
 		SlimFileWrapper wrapper = new SlimFileWrapper(file);
-		wrapper.addLsitener(this);
-		files.add(wrapper);
-		for (FileChangeListener listener : listeners) {
-			listener.onNewFileLoaded(wrapper);
-		}
+    if(!files.contains(wrapper)) {
+      wrapper.addLsitener(this);
+      files.add(wrapper);
+      for (FileChangeListener listener : listeners) {
+        listener.onNewFileLoaded(wrapper);
+      }
+    }
 	}
 
 	public void addListener(FileChangeListener listener) {
@@ -58,6 +60,14 @@ public class SlimFileContext implements FileChangeListener {
 		return files.size() > 0;
 	}
 
+  public File[] getOpenFiles() {
+    Set<File> filePaths = new HashSet<File>();
+    for(SlimFileWrapper wrapper : files) {
+     filePaths.add(wrapper.getFile());   
+    }
+    return filePaths.toArray(new File[filePaths.size()]);
+  }
+
 	@Override
 	public void onNewFileLoaded(SlimFileWrapper newFile) {
 
@@ -65,7 +75,8 @@ public class SlimFileContext implements FileChangeListener {
 
 	public File getNextFile() {
 		try {
-      File ten[] = directory.listTen(".*\\w+\\.java.*");
+      File openFiles[] = getOpenFiles();
+      File ten[] = directory.listTen(".*\\w+\\.java.*", openFiles);
       if(ten != null && ten.length > 0) {
         File next = ten[0];
         if(next != null) {
