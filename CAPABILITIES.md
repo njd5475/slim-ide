@@ -12,15 +12,18 @@
 * Capability for the user to be able to insert new characters and delete existing ones and save the changes.
 * Capability for the user to create new lines by pressing enter.
 * Capability of basic cursor navigation home bring cursor to beginning of the line end to the end of the current line, backspace removes the character before the cursor or joins the current line to the previous line if there is one.
+* Capability to open the next file suggested for opening
 
 ## Missing Capabilities (in priority order)
 
+* Capability to search through all the files currently open and jump through the matches.
+* Capability to open a file by searching through the listing of files.
+* Capability to move the cursor to any line by clicking on that line
 * Capability to render a scrollable selectable view of a file anywhere within any window and of any size.
 * Capability for the user to choose to create a new file with a single click if the file they passed to the program to open does not exist and the capability for the user to choose to create all parent directories for new files that do not exist.
 * Capability for code to determine what nearest directory is a code project directory.
 * Capability for the user to know where the current scroll position is so they know approximately how far through the current number of lines they are.
 * Capability for the user to open files on click from the current directory if no files are opened from the command line.
 * Capability for the user to scroll using the cursor line if the user moves the cursor outside of the visible area the scroll offset should adjust to display the current line.
-* Capability for the user to move the cursor from the beginning of the line to the end of the line.
 * Capability for the user to control whether or not line wrapping is turned on or horizontal scrolling will be used. If line wrapping is used then any line with characters beyond the width of the window will be placed on a non counted extra line and be part of the editors total height. If no line wrapping then a horizontal scroll bar will be used to allow the user to move the view to display the additional characters.
-
+* Capability for the user to know exactly what line the cursor is one.

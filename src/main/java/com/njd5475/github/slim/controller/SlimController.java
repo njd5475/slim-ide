@@ -8,6 +8,7 @@ import java.util.Set;
 import com.njd5475.github.slim.model.SlimFileContext;
 import com.njd5475.github.slim.model.SlimFileWrapper;
 import com.njd5475.github.slim.model.SlimLineWrapper;
+import com.njd5475.github.slim.model.SlimSymbolWrapper;
 import com.njd5475.github.slim.view.SlimRenderVisitor;
 
 public class SlimController implements FileChangeListener {
@@ -38,6 +39,11 @@ public class SlimController implements FileChangeListener {
 	public SlimFileContext getFileContext() {
 		return fileContext;
 	}
+
+  public SlimSymbolWrapper getSymbolAt(int cursorLine, int cursorColumn) {
+    SlimLineWrapper line = getLine(cursorLine);
+    return line.getSymbolAt(cursorColumn);
+  }
 
 	public int getTotalLines() {
 		return numberOfLines;
@@ -119,5 +125,5 @@ public class SlimController implements FileChangeListener {
 		SlimLineWrapper line = getLine(cursorLine);
 		line.getFile().addLineAt(line, cursorColumn);
 		this.numberOfLines++;
-	}
+  }
 }

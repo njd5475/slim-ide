@@ -73,6 +73,18 @@ public class SlimLineWrapper implements SlimRenderable, Comparable<SlimLineWrapp
 		return builder.toString();
 	}
 
+  public SlimSymbolWrapper getSymbolAt(int cursorColumn) {
+    int totalCharsReached = 0, lastCharsTotal = 0;
+    for (SlimSymbolWrapper symbol : symbols) {
+      lastCharsTotal = totalCharsReached;
+      totalCharsReached += symbol.length();
+      if(cursorColumn < totalCharsReached) {
+        return symbol;
+      }
+    }
+    return null;
+  }
+
 	public void removeCharacterAt(int cursorColumn, SlimEditContext editContext) {
 		int totalCharsReached = 0, lastCharsTotal = 0;
 		for (SlimSymbolWrapper symbol : symbols) {
@@ -130,6 +142,6 @@ public class SlimLineWrapper implements SlimRenderable, Comparable<SlimLineWrapp
 		if(this.file == line.file && line.lineNum <= lineNum) {
 			this.lineNum++;
 		}
-	}
+  }
 
 }
