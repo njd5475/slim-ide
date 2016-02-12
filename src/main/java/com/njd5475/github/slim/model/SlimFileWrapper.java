@@ -92,14 +92,20 @@ public class SlimFileWrapper {
 
 	public void remove(SlimLineWrapper line) {
 		int lineNum = line.getLineNumber();
-		lines.remove(line.getLineNumber());
+		lines.remove(lineNum);
 		int totalLines = getLineCount();
-		for (int i = lineNum + 1; i < totalLines; ++i) {
-			SlimLineWrapper lineToMove = lines.get(i);
-			lineToMove.lineDeleted(line);
-			lines.put(i - 1, lineToMove);
-		}
 
+		Set<SlimLineWrapper> theLines = new HashSet<SlimLineWrapper>();
+		//resequence the lines
+		for (int i = lineNum + 1; i < totalLines; ++i) {
+			lines.get(i).lineDeleted(line);
+			theLines.add(lines.get(i));
+		}
+		//rebuild line map
+		for(SlimLineWrapper l : theLines) {
+			lines.put(l.getLineNumber(), l);
+		}
+		
 	}
 
 	public SlimLineWrapper getLine(int i) {

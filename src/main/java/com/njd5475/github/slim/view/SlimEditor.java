@@ -237,7 +237,7 @@ public class SlimEditor extends JPanel {
 	}
 
 	public int getMaxHeight() {
-		return getLineHeight() * getTotalNumberOfLines() + getLineHeight() * controller.getTotalFileCount();
+		return getLineHeight() * getTotalNumberOfLines() + (2*getLineHeight()) * controller.getTotalFileCount();
 	}
 
 	private int getTotalNumberOfLines() {

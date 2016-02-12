@@ -56,6 +56,8 @@ public class DefaultAttachableRenderer implements SlimRenderVisitor {
 		lineY = 0;
 		Rectangle bb = g.getClipBounds();
 
+    currentLineG.translate(0, lineHeight);
+    currentLineG.drawString("Current File: " + slimFileWrapper.getFile().getName(), 0, 0);
 		for (SlimLineWrapper line : slimFileWrapper.getLines()) {
 			currentLineG.translate(0, lineHeight);
 			lineY += lineHeight;
