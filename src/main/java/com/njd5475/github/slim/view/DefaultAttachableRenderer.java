@@ -132,7 +132,8 @@ public class DefaultAttachableRenderer implements SlimRenderVisitor {
 
 	@Override
 	public void render(SlimSymbolWrapper symbol) {
-
+		lineOnly.drawRect(0, -lineHeight, symbol.toString().length()*widths[1], lineHeight);
+		
 		char[] symChars = symbol.toString().toCharArray();
 		for (char c : symChars) {
 			if (currentChar == cursorColumn && currentLine == cursorLine) {

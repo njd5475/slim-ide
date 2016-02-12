@@ -58,6 +58,8 @@ public class SlimFileWrapper {
 						wrapper = new SlimLineWrapper(++lineNo, line + "\n", this);
 						lines.put(wrapper.getLineNumber(), wrapper);
 					}
+					wrapper = new SlimLineWrapper(++lineNo, "", this);
+					lines.put(wrapper.getLineNumber(), wrapper);
 					buffr.close();
 				}
 			} catch (FileNotFoundException e) {
@@ -98,14 +100,15 @@ public class SlimFileWrapper {
 		Set<SlimLineWrapper> theLines = new HashSet<SlimLineWrapper>();
 		//resequence the lines
 		for (int i = lineNum + 1; i < totalLines; ++i) {
-			lines.get(i).lineDeleted(line);
-			theLines.add(lines.get(i));
+			SlimLineWrapper ln = lines.remove(i);
+			ln.lineDeleted(line);
+			//remove from map
+			theLines.add(ln);
 		}
 		//rebuild line map
 		for(SlimLineWrapper l : theLines) {
 			lines.put(l.getLineNumber(), l);
 		}
-		
 	}
 
 	public SlimLineWrapper getLine(int i) {
@@ -146,7 +149,7 @@ public class SlimFileWrapper {
 		int totalLines = getLineCount();
 		Set<SlimLineWrapper> toUpdate = new HashSet<SlimLineWrapper>();
 		for (int i = lineNum; i <= totalLines; ++i) {
-			SlimLineWrapper current = lines.get(i);
+			SlimLineWrapper current = lines.remove(i);
 			toUpdate.add(current);
 			current.lineInserted(current);
 		}

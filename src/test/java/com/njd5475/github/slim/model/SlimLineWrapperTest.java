@@ -28,6 +28,14 @@ public class SlimLineWrapperTest {
 		line.addCharacterAt('7', 5);
 		assertEquals("This 7is a test line", line.getLine());
 	}
+	
+	@Test
+	public void testAddCharacterToBlank1SymbolLine() {
+		line = new SlimLineWrapper(1, "\n", file);
+		assertEquals(1, line.getSymbols().size());
+		line.addCharacterAt('e', 1);
+		assertEquals(2, line.getSymbols().size());
+	}
 
 	@Test
 	public void testRemoveCharacterAt() {
