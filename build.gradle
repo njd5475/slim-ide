@@ -17,7 +17,7 @@ dependencies {
 }
 
 jar {
-	baseName = "slim-ide"
+  baseName = "slim-ide"
   version = '0.0.1'
   manifest {
   	attributes 'Main-Class': "$mainClassName"
@@ -26,11 +26,4 @@ jar {
     configurations.compile.collect { it.isDirectory() ? it : zipTree(it) }
   }
 }
-
-sourceSets {
-    test {
-        resources {
-            srcDir 'test'
-        }
-    }
-}
+	
