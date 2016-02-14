@@ -8,10 +8,10 @@ import com.njd5475.github.slim.view.SlimRenderable;
 
 public class SlimLineWrapper implements SlimRenderable, Comparable<SlimLineWrapper> {
 
-	private SlimFileWrapper					file;
-	private int											lineNum;
-	private Set<SlimSymbolWrapper>	symbols;
-	private String									originalLine;
+	private SlimFileWrapper file;
+	private int lineNum;
+	private Set<SlimSymbolWrapper> symbols;
+	private String originalLine;
 
 	public SlimLineWrapper(int lineNum, String line, SlimFileWrapper wrapper) {
 		this.file = wrapper;
@@ -63,6 +63,8 @@ public class SlimLineWrapper implements SlimRenderable, Comparable<SlimLineWrapp
 		}
 		// rebuild original line
 		originalLine = calcLine();
+		// rebuild symbols
+		this.symbols = SlimSymbolWrapper.build(this);
 	}
 
 	private String calcLine() {
@@ -73,17 +75,17 @@ public class SlimLineWrapper implements SlimRenderable, Comparable<SlimLineWrapp
 		return builder.toString();
 	}
 
-  public SlimSymbolWrapper getSymbolAt(int cursorColumn) {
-    int totalCharsReached = 0, lastCharsTotal = 0;
-    for (SlimSymbolWrapper symbol : symbols) {
-      lastCharsTotal = totalCharsReached;
-      totalCharsReached += symbol.length();
-      if(cursorColumn < totalCharsReached) {
-        return symbol;
-      }
-    }
-    return null;
-  }
+	public SlimSymbolWrapper getSymbolAt(int cursorColumn) {
+		int totalCharsReached = 0, lastCharsTotal = 0;
+		for (SlimSymbolWrapper symbol : symbols) {
+			lastCharsTotal = totalCharsReached;
+			totalCharsReached += symbol.length();
+			if (cursorColumn < totalCharsReached) {
+				return symbol;
+			}
+		}
+		return null;
+	}
 
 	public void removeCharacterAt(int cursorColumn, SlimEditContext editContext) {
 		int totalCharsReached = 0, lastCharsTotal = 0;
@@ -115,10 +117,10 @@ public class SlimLineWrapper implements SlimRenderable, Comparable<SlimLineWrapp
 	}
 
 	public void join(SlimLineWrapper line2) {
-		if(line2 == null) {
+		if (line2 == null) {
 			throw new NullPointerException("You cannot join to a non-existant line");
 		}
-		
+
 		if (file == line2.file) {
 			this.originalLine += line2.originalLine;
 			this.originalLine = this.originalLine.replaceAll("\n", "") + "\n";
@@ -133,15 +135,15 @@ public class SlimLineWrapper implements SlimRenderable, Comparable<SlimLineWrapp
 	}
 
 	public void lineDeleted(SlimLineWrapper line) {
-		if(this.file == line.file && this.lineNum > line.lineNum) {
+		if (this.file == line.file && this.lineNum > line.lineNum) {
 			this.lineNum--;
 		}
 	}
-	
+
 	public void lineInserted(SlimLineWrapper line) {
-		if(this.file == line.file && line.lineNum <= lineNum) {
+		if (this.file == line.file && line.lineNum <= lineNum) {
 			this.lineNum++;
 		}
-  }
+	}
 
 }

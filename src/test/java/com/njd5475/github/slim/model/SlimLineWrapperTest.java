@@ -30,7 +30,7 @@ public class SlimLineWrapperTest {
 	}
 	
 	@Test
-	public void testAddCharacterToBlank1SymbolLine() {
+	public void testAddCharacterToBlankSymbolLine() {
 		line = new SlimLineWrapper(1, "\n", file);
 		assertEquals(1, line.getSymbols().size());
 		line.addCharacterAt('e', 1);
