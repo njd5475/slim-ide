@@ -1,5 +1,7 @@
 package com.njd5475.github.slim.view;
 
+import java.io.File;
+import java.io.IOException;
 import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Graphics;
@@ -66,6 +68,7 @@ public class DefaultAttachableRenderer implements SlimRenderVisitor {
             }
             line.render(this);
         }
+        currentLineG.translate(0, lineHeight);
         Graphics2D cursor = (Graphics2D) currentLineG.create();
         cursor.setColor(new Color(Color.blue.getRed(), Color.blue.getGreen(), Color.blue.getBlue(), 100));
         cursor.fillRect(0, 0, cursor.getClipBounds().width, lineHeight + maxDescent);
@@ -100,16 +103,20 @@ public class DefaultAttachableRenderer implements SlimRenderVisitor {
         String nextFile = String.format("Next File: %s", context.getNextFile());
         int totalWidth = g.getClipBounds().width - margin;
         int strWidth = g.getFontMetrics().stringWidth(nextFile);
+        String nextStr = nextFile.toString();
+        try {
+           nextStr = nextStr.replace((new File(".")).getCanonicalPath(), "");
+        }catch(IOException ioe) {}
         if (context.hasFiles()) {
             for (SlimFileWrapper wrapper : context.getFiles()) {
                 wrapper.render(this);
                 g.translate(0, (wrapper.getLineCount() * lineHeight) + lineHeight + maxDescent);
             }
         } else {
-            g.drawString(nextFile, totalWidth / 2 - strWidth / 2,
+            g.drawString(nextStr, totalWidth / 2 - strWidth / 2,
                     g.getClipBounds().height / 2 - lineHeight - maxDescent);
         }
-        g.drawString(nextFile, totalWidth - strWidth, lineHeight - maxDescent);
+        g.drawString(nextStr, totalWidth - strWidth, lineHeight - maxDescent);
         long end = System.currentTimeMillis() - start;
         // System.out.println("Render took " + end + "ms");
     }
