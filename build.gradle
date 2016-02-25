@@ -11,9 +11,9 @@ repositories {
 }
 
 dependencies {
-  compile 'com.googlecode.disruptor:disruptor:2.10.4'
-  testCompile 'org.mockito:mockito-all:1.8.4' 
+  testCompile group: 'org.mockito', name: 'mockito-all', version: '1.8.4'
   testCompile group: 'junit', name: 'junit', version: '4.+'
+  
 }
 
 jar {

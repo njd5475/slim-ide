@@ -16,7 +16,11 @@
 
 ## Missing Capabilities (in priority order)
 
-* Capability to search through all the files currently open and jump through the matches.
+* Capability for rendering methods to have separate contexts which provide a graphics object to
+  use for rendering. As well as define other unique rendering properties which can be inherited
+  or cloned to other context instances.
+* 
+* Capability to search through all the files currently opened and jump through the matches.
 * Capability to open a file by searching through the listing of files.
 * Capability to move the cursor to any line by clicking on that line
 * Capability to render a scrollable selectable view of a file anywhere within any window and of any size.
