@@ -1,6 +1,7 @@
 apply plugin : 'java'
 apply plugin : 'eclipse'
 apply plugin : 'application'
+apply plugin: "jacoco"
 
 mainClassName="com.njd5475.github.slim.view.SlimIDE"
 sourceCompatibility = 1.8
@@ -27,3 +28,15 @@ jar {
   }
 }
 	
+jacoco {
+    toolVersion = "0.7.1.201405082137"
+    reportsDir = file("$buildDir/customJacocoReportDir")
+}
+
+jacocoTestReport {
+    reports {
+        xml.enabled false
+        csv.enabled false
+        html.destination "${buildDir}/jacocoHtml"
+    }
+}
