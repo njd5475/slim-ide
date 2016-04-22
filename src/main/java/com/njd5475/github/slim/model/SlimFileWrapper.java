@@ -62,7 +62,7 @@ public class SlimFileWrapper {
                     lines.put(wrapper.getLineNumber(), wrapper);
                     buffr.close();
                 }else{
-                    lines.put(0, new SlimLineWrapper(0, "\n", this));
+                    lines.put(1, new SlimLineWrapper(1, "\n", this));
                 }
             } catch (FileNotFoundException e) {
                 e.printStackTrace();
