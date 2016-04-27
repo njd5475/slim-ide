@@ -4,6 +4,7 @@ import java.util.LinkedHashSet;
 import java.util.Set;
 
 import com.njd5475.github.slim.controller.SlimEditContext;
+import com.njd5475.github.slim.view.SlimRenderContext;
 import com.njd5475.github.slim.view.SlimRenderVisitor;
 import com.njd5475.github.slim.view.SlimRenderable;
 
@@ -23,8 +24,8 @@ public class SlimSymbolWrapper implements SlimRenderable {
     }
 
     @Override
-    public void render(SlimRenderVisitor visitor) {
-        visitor.render(this);
+    public void render(SlimRenderContext ctx, SlimRenderVisitor visitor) {
+        visitor.render(ctx, this);
     }
 
     private static String getType(char c) {

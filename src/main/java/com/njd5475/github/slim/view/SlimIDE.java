@@ -73,11 +73,9 @@ public class SlimIDE {
 			Robot robot = new Robot();
 
 			// The hard part is knowing WHERE to capture the screen shot from
-
 			BufferedImage screenShot = robot.createScreenCapture(frame.getBounds());
 
 			// Save your screen shot with its label
-
 			System.out.println("Taking the screenshot");
 			ImageIO.write(screenShot, "png", new File("./images/screenshot.png"));
 		} catch (IOException e1) {

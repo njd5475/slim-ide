@@ -7,8 +7,8 @@ public class SlimWidget implements SlimRenderable {
 	}
 
 	@Override
-	public void render(SlimRenderVisitor visitor) {
-		visitor.render(this);
+	public void render(SlimRenderContext ctx, SlimRenderVisitor visitor) {
+		visitor.render(ctx, this);
 	}
 
 }

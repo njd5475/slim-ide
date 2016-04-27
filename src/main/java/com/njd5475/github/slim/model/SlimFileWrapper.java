@@ -14,6 +14,7 @@ import java.util.TreeMap;
 import java.util.TreeSet;
 
 import com.njd5475.github.slim.controller.FileChangeListener;
+import com.njd5475.github.slim.view.SlimRenderContext;
 import com.njd5475.github.slim.view.SlimRenderVisitor;
 
 public class SlimFileWrapper {
@@ -32,8 +33,8 @@ public class SlimFileWrapper {
         listeners.add(listener);
     }
 
-    public void render(SlimRenderVisitor visitor) {
-        visitor.render(this);
+    public void render(SlimRenderContext ctx, SlimRenderVisitor visitor) {
+        visitor.render(ctx, this);
     }
 
     public String toString() {

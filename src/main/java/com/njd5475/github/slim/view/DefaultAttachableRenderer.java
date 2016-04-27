@@ -52,7 +52,7 @@ public class DefaultAttachableRenderer implements SlimRenderVisitor {
     }
 
     @Override
-    public void render(SlimFileWrapper slimFileWrapper) {
+    public void render(SlimRenderContext ctx, SlimFileWrapper slimFileWrapper) {
         currentLineG = (Graphics2D) g.create();
         currentLineG.translate(margin, 0);
         lineY = 0;
@@ -66,7 +66,7 @@ public class DefaultAttachableRenderer implements SlimRenderVisitor {
             if (lineY > bb.getY() + bb.getHeight()) {
                 break;
             }
-            line.render(this);
+            line.render(ctx, this);
         }
         currentLineG.translate(0, lineHeight);
         Graphics2D cursor = (Graphics2D) currentLineG.create();
@@ -88,6 +88,7 @@ public class DefaultAttachableRenderer implements SlimRenderVisitor {
 
     @Override
     public void renderEditor(SlimEditor slimEditor, Graphics g) {
+        SlimRenderContext ctx = new SlimRenderContext((Graphics2D) g.create());
         long start = System.currentTimeMillis();
         this.g = g;
         this.widths = g.getFontMetrics().getWidths();
@@ -109,7 +110,7 @@ public class DefaultAttachableRenderer implements SlimRenderVisitor {
         }catch(IOException ioe) {}
         if (context.hasFiles()) {
             for (SlimFileWrapper wrapper : context.getFiles()) {
-                wrapper.render(this);
+                wrapper.render(ctx, this);
                 g.translate(0, (wrapper.getLineCount() * lineHeight) + lineHeight + maxDescent);
             }
         } else {
@@ -119,10 +120,11 @@ public class DefaultAttachableRenderer implements SlimRenderVisitor {
         g.drawString(nextStr, totalWidth - strWidth, lineHeight - maxDescent);
         long end = System.currentTimeMillis() - start;
         // System.out.println("Render took " + end + "ms");
+        ctx.dispose();
     }
 
     @Override
-    public void render(SlimLineWrapper slimLineWrapper) {
+    public void render(SlimRenderContext ctx, SlimLineWrapper slimLineWrapper) {
         lineOnly = (Graphics2D) currentLineG.create();
         currentChar = 0;
         if (currentLine == cursorLine) {
@@ -132,14 +134,14 @@ public class DefaultAttachableRenderer implements SlimRenderVisitor {
             cursor.dispose();
         }
         for (SlimSymbolWrapper sym : slimLineWrapper.getSymbols()) {
-            sym.render(this);
+            sym.render(ctx, this);
         }
         ++currentLine; // increment the current line count
         lineOnly.dispose();
     }
 
     @Override
-    public void render(SlimSymbolWrapper symbol) {
+    public void render(SlimRenderContext ctx, SlimSymbolWrapper symbol) {
 
         char[] symChars = symbol.toString().toCharArray();
         for (char c : symChars) {
@@ -168,8 +170,13 @@ public class DefaultAttachableRenderer implements SlimRenderVisitor {
     }
 
     @Override
-    public void render(SlimWidget slimWidget) {
+    public void render(SlimRenderContext ctx, SlimWidget slimWidget) {
 
+    }
+
+    @Override
+    public void render(SlimRenderContext ctx, SlimInputWidget slimInputWidget) {
+        
     }
 
 }

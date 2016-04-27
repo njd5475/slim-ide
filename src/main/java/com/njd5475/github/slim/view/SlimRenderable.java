@@ -2,6 +2,6 @@ package com.njd5475.github.slim.view;
 
 public interface SlimRenderable {
 
-	public void render(SlimRenderVisitor visitor);
+	public void render(SlimRenderContext ctx, SlimRenderVisitor visitor);
 
 }
