@@ -17,7 +17,7 @@ import com.njd5475.github.slim.controller.FileChangeListener;
 import com.njd5475.github.slim.view.SlimRenderContext;
 import com.njd5475.github.slim.view.SlimRenderVisitor;
 
-public class SlimFileWrapper {
+public class SlimFileWrapper implements Comparable<SlimFileWrapper> {
 
     private static final int              FLUSH_RATE = 1000;
     private File                          file;
@@ -162,4 +162,10 @@ public class SlimFileWrapper {
         lines.put(lineNum, line);
     }
 
+    @Override
+    public int compareTo(SlimFileWrapper o) {
+        return this.toString().compareTo(o.toString());
+    }
+
+    
 }

@@ -200,13 +200,13 @@ public class SlimEditor extends JPanel {
             cursorLine = 0;
         }
 
-        if (cursorColumn >= ctrl.getLineLength(cursorLine) && cursorLine < ctrl.getTotalLines()) {
+        if (cursorColumn >= ctrl.getLineLength(cursorLine) && cursorLine < ctrl.getTotalLines()-1) {
             cursorLine++;
             cursorColumn = 0;
         }
 
-        if (cursorColumn >= ctrl.getLineLength(cursorLine) && cursorLine >= ctrl.getTotalLines()) {
-            cursorLine = ctrl.getTotalLines();
+        if (cursorColumn >= ctrl.getLineLength(cursorLine) && cursorLine >= ctrl.getTotalLines()-1) {
+            cursorLine = ctrl.getTotalLines()-1;
             cursorColumn = ctrl.getLineLength(cursorLine);
         }
 
@@ -218,7 +218,7 @@ public class SlimEditor extends JPanel {
             cursorColumn = ctrl.getLineLength(cursorLine) - 1;
         }
 
-        if (cursorLine >= ctrl.getTotalLines()) {
+        if (cursorLine >= ctrl.getTotalLines()-1) {
             cursorLine = ctrl.getTotalLines() - 1;
         }
     }
