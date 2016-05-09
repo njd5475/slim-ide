@@ -115,6 +115,9 @@ public class SlimDirectory {
                 largest = entry;
             }
         }
+        if(largest == null) {
+            return null;
+        }
         return largest.getKey();
     }
 }
