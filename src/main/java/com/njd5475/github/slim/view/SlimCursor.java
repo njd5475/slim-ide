@@ -21,12 +21,25 @@ public class SlimCursor {
         this.file = file;
         this.column = column;
     }
-
+    
+    public int getLine() {
+        return line;
+    }
+    
+    public int getColumn() {
+        return column;
+    }
+    
     public void advance() {
-
+        skip(1);
     }
 
-    public void skip() {
-
+    public void skip(int n) {
+        column += n;
+        while(column > this.file.getLine(line).length()) {
+            column -= this.file.getLine(line).length();
+            ++line;
+        }
     }
+    
 }
