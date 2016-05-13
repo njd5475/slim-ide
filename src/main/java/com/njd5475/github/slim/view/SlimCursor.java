@@ -33,6 +33,14 @@ public class SlimCursor {
     public void advance() {
         skip(1);
     }
+    
+    public void endOfLine() {
+    	skip(column - file.getLine(column).length());
+    }
+    
+    public void beginningOfLine() {
+    	skip(-column);
+    }
 
     public void skip(int n) {
         column += n;
