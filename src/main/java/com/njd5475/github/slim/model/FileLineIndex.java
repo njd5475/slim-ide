@@ -15,6 +15,7 @@ public class FileLineIndex {
 
     private File file;
     private File indexfile;
+    private long loaded = -1;
     
     private Map<Integer, Integer> lineEnds = new HashMap<Integer, Integer>();
     
@@ -37,6 +38,29 @@ public class FileLineIndex {
             e.printStackTrace();
         }
     }
+    
+    /**
+     * This method will return the byte position of the beginning of a 
+     * particular line number designated by lineBegin.
+     * 
+     * @param lineBegin
+     * @return
+     */
+    public long bytePos(int lineBegin) {
+    	checkLoaded();
+    	long pos = -1;
+    	// add all line endings from 0 to lineBegin
+    	for(int i = 0; i < lineBegin; ++i) {
+    		Integer count = lineEnds.get(i);
+    		if(count != null) {
+    			pos += count;
+    		}else{
+    			pos = -1;
+    			break;
+    		}
+    	}
+    	return pos;
+    }
 
     private int lineNm = 0;
     private int lastPos = 0;
@@ -49,6 +73,18 @@ public class FileLineIndex {
             ++lineNm;
             lineEnds.put(lineNm, (lastPos += line.getBytes().length));
         });
+        loaded = System.currentTimeMillis();
+    }
+    
+    private void checkLoaded() {
+    	if(loaded == -1 && file.lastModified() > loaded) {
+    		try {
+					load();
+					save();
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+    	}
     }
     
     private void loadExisting() throws ClassNotFoundException, FileNotFoundException, IOException {
