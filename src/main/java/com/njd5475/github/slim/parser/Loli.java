@@ -12,26 +12,32 @@ public final class Loli {
 
     private Loli() {
     }
+    
+    private List<Token> tokenize(FileReader freader) throws IOException {
+        List<Token> tokens = new LinkedList<Token>();
+        Token last = null, next = null;
+        int c;
+        while ((c = freader.read()) != -1) {
+            if (last == null) {
+                next = last = new Token((char) c);
+            } else {
+                next = last.next((char) c);
+            }
+
+            if (next != last) {
+                tokens.add(last);
+            }
+            last = next;
+        }
+        return tokens;
+    }
 
     private Object read(File file) {
         try {
             FileReader freader = new FileReader(file);
-            Token last = null, next = null;
-            int c;
-            List<Token> tokens = new LinkedList<Token>();
-            while ((c = freader.read()) != -1) {
-                if (last == null) {
-                    next = last = new Token((char) c);
-                } else {
-                    next = last.next((char) c);
-                }
-
-                if (next != last) {
-                    tokens.add(last);
-                }
-                last = next;
-            }
+            List<Token> tokens = tokenize(freader);
             freader.close();
+            
             System.out.println(tokens);
         } catch (FileNotFoundException e) {
             e.printStackTrace();
