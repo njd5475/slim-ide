@@ -1,0 +1,4 @@
+java:[ 
+  access: [public, private, protected]
+  blue: access
+]
