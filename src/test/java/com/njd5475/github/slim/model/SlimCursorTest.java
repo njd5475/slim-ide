@@ -33,4 +33,14 @@ public class SlimCursorTest {
         assertEquals(10, cursor.getColumn());
     }
 
+    @Test
+    public void insert() {
+        when(mLine.length()).thenReturn(20);
+        when(mFile.getLine(2)).thenReturn(mLine);
+        String insertedWord = "Hello World!";
+        for(char c : insertedWord.toCharArray()) {
+            cursor.insert(c);
+        }
+        verify(mLine, times(insertedWord.length())).addCharacterAt(anyChar(), anyInt());
+    }
 }

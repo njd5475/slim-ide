@@ -1,5 +1,6 @@
 package com.njd5475.github.slim.view;
 
+import com.njd5475.github.slim.controller.SlimEditContext;
 import com.njd5475.github.slim.model.SlimFileWrapper;
 
 /**
@@ -50,4 +51,13 @@ public class SlimCursor {
         }
     }
     
+    public void insert(char c) {
+        this.file.getLine(line).addCharacterAt(c, column);
+    }
+    
+    public void delete() {
+        SlimEditContext editContext = new SlimEditContext();
+        this.file.getLine(line).removeCharacterAt(column, editContext);
+        editContext.apply(this.file);
+    }
 }
