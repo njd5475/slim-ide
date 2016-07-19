@@ -3,7 +3,7 @@ apply plugin : 'eclipse'
 apply plugin : 'application'
 apply plugin: "jacoco"
 
-mainClassName="com.anor.space.renderer.swing.SwingRenderer"
+mainClassName="com.njd5475.github.slim.view.SlimIDE"
 sourceCompatibility = 1.8
 targetCompatibility = 1.8
 
@@ -18,7 +18,7 @@ dependencies {
 }
 
 jar {
-  baseName = "space-adventure"
+  baseName = "slim-ide"
   version = '0.0.1'
   manifest {
   	attributes 'Main-Class': "$mainClassName"
