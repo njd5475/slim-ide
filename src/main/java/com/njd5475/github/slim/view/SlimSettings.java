@@ -3,8 +3,6 @@ package com.njd5475.github.slim.view;
 import java.awt.Dimension;
 import java.awt.Point;
 
-import com.esotericsoftware.yamlbeans.YamlReader;
-
 public class SlimSettings {
 
     private static SlimSettings instance;
@@ -12,7 +10,7 @@ public class SlimSettings {
     private Dimension           windowSizeDefault = new Dimension(800, 600);
 
     private SlimSettings() {
-        YamlReader yaml = new YamlReader("");
+        
     }
 
     public static SlimSettings loadDefaults() {
