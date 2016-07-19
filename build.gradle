@@ -3,7 +3,7 @@ apply plugin : 'eclipse'
 apply plugin : 'application'
 apply plugin: "jacoco"
 
-mainClassName="com.njd5475.github.slim.view.SlimIDE"
+mainClassName="com.anor.space.renderer.swing.SwingRenderer"
 sourceCompatibility = 1.8
 targetCompatibility = 1.8
 
@@ -12,15 +12,13 @@ repositories {
 }
 
 dependencies {
+  compile 'com.eclipsesource.minimal-json:minimal-json:0.9.4'
   testCompile group: 'org.mockito', name: 'mockito-all', version: '1.8.4'
   testCompile group: 'junit', name: 'junit', version: '4.+'
-  // http://mvnrepository.com/artifact/com.esotericsoftware.yamlbeans/yamlbeans
-  compile group: 'com.esotericsoftware.yamlbeans', name: 'yamlbeans', version: '1.08'
-  
 }
 
 jar {
-  baseName = "slim-ide"
+  baseName = "space-adventure"
   version = '0.0.1'
   manifest {
   	attributes 'Main-Class': "$mainClassName"
