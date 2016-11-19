@@ -1,6 +1,6 @@
 package com.njd5475.github.slim.view;
 
-public class SlimWidget implements SlimRenderable {
+public abstract class SlimWidget implements SlimRenderable {
 
 	public SlimWidget() {
 		// TODO Auto-generated constructor stub

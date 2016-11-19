@@ -7,6 +7,10 @@ public class SlimInputWidget implements SlimRenderable {
     public SlimInputWidget(String text) {
         this.text = text;
     }
+    
+    public String getText() {
+    	return text;
+    }
 
     @Override
     public void render(SlimRenderContext ctx, SlimRenderVisitor visitor) {
