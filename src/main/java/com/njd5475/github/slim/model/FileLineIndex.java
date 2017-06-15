@@ -87,11 +87,13 @@ public class FileLineIndex {
     	}
     }
     
-    private void loadExisting() throws ClassNotFoundException, FileNotFoundException, IOException {
+    @SuppressWarnings("resource")
+		private void loadExisting() throws ClassNotFoundException, FileNotFoundException, IOException {
         lineEnds = (Map<Integer,Integer>) (new ObjectInputStream(new FileInputStream(indexFiles))).readObject();
     }
     
-    private void save() throws FileNotFoundException, IOException {
+    @SuppressWarnings("resource")
+		private void save() throws FileNotFoundException, IOException {
         (new ObjectOutputStream(new FileOutputStream(indexFiles))).writeObject(lineEnds);
     }
 
