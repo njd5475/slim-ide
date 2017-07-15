@@ -125,6 +125,12 @@ public class DefaultAttachableRenderer implements SlimRenderVisitor {
 						g.getClipBounds().height / 2 - lineHeight - maxDescent);
 			}
 			g.drawString(nextStr, totalWidth - strWidth, lineHeight - maxDescent);
+		}else{
+			int y = 20;
+			for(SlimFileWrapper wrapper : context.getFiles()) {
+				g.drawString(wrapper.getFile().getAbsolutePath(), 0, y);
+				y += 20;
+			}
 		}
 		long end = System.currentTimeMillis() - start;
 		// System.out.println("Render took " + end + "ms");
