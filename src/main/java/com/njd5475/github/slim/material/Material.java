@@ -9,16 +9,15 @@ package com.njd5475.github.slim.material;
  * 
  * @author nick
  */
-public class Material {
+public abstract class Material implements IMaterial {
 
-	private PhysicalState state;
+	private IMaterial parent;
 	
-	public Material(PhysicalState state) {
-		this.state = state;
+	public Material(IMaterial parent) {
+		this.parent = parent;
 	}
 	
-	public Material() {
-	  this(new PhysicalState());
+	public IMaterial getParent() {
+		return parent;
 	}
-
 }
