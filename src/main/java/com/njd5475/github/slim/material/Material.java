@@ -83,4 +83,30 @@ public abstract class Material implements IMaterial {
 	  
 	  return m;
 	}
+	
+	public Material top(double percentage) {
+	  Material m = new Material(this) {
+	    private double percent = percentage/100d;
+
+      @Override
+      public int getHeight() {
+        return (int)(super.getHeight() * percent);
+      }
+	  };
+	  
+	  return m;
+	}
+	
+	public Material minHeight(int height) {
+	  Material m = new Material(this) {
+	    private int minHeight = height;
+
+      @Override
+      public int getHeight() {
+        return Math.max(minHeight, super.getHeight());
+      }
+	  };
+	  
+	  return m;
+	}
 }

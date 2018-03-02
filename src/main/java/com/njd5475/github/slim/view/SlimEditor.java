@@ -44,7 +44,7 @@ public class SlimEditor extends JPanel {
   private int                             minLine;
   private int                             maxLine;
   private Material                        testMaterial;
-  private AwtMaterialRenderer awtRenderer;
+  private AwtMaterialRenderer             awtRenderer;
 
   public SlimEditor(SlimSettings defaults, SlimController controller) {
     this.setPreferredSize(defaults.getWindowDimensions());
@@ -255,16 +255,16 @@ public class SlimEditor extends JPanel {
       once = true;
     }
 
-    if(awtRenderer == null) {
+    if (awtRenderer == null) {
       awtRenderer = new AwtMaterialRenderer();
     }
     if (testMaterial == null) {
-      testMaterial = (new Screen((JFrame) this.getTopLevelAncestor())).topLeftCorner(10).fill(Color.red);
+      testMaterial = (new Screen((JFrame) this.getTopLevelAncestor())).top(10).minHeight(35).fill(Color.red);
     }
     awtRenderer.setGraphics(g);
     testMaterial.render(awtRenderer);
     g.dispose();
-    
+
   }
 
   public SlimController getController() {
