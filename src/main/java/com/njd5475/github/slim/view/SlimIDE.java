@@ -34,7 +34,6 @@ public class SlimIDE {
 		SlimSettings defaults = SlimSettings.loadDefaults();
 		frame = new JFrame("SlimIDE");
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-
 		DefaultAttachableRenderer renderer = new DefaultAttachableRenderer();
 		SlimController controller = new SlimController(renderer, fileContext);
 		SlimEditor editor = new SlimEditor(defaults, controller);
@@ -66,6 +65,7 @@ public class SlimIDE {
 		}
 		frame.setVisible(true);
 		editor.requestFocus();
+		new Thread(fileContext).start();
 	}
 
 	public static void takeScreenshot() {

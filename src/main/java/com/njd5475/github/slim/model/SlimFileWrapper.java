@@ -19,160 +19,162 @@ import com.njd5475.github.slim.view.SlimRenderVisitor;
 
 public class SlimFileWrapper implements Comparable<SlimFileWrapper> {
 
-	private static final int							FLUSH_RATE	= 1000;
-	private File													file;
-	private Set<FileChangeListener>				listeners		= new HashSet<FileChangeListener>();
-	private Map<Integer, SlimLineWrapper>	lines				= new TreeMap<Integer, SlimLineWrapper>();
-	private boolean												loaded			= false;
+  private static final int              FLUSH_RATE = 1000;
+  private File                          file;
+  private Set<FileChangeListener>       listeners  = new HashSet<FileChangeListener>();
+  private Map<Integer, SlimLineWrapper> lines      = new TreeMap<Integer, SlimLineWrapper>();
+  private boolean                       loaded     = false;
 
-	public SlimFileWrapper(File file) {
-		this.file = file;
-	}
+  public SlimFileWrapper(File file) {
+    this.file = file;
+  }
 
-	public void addLsitener(FileChangeListener listener) {
-		listeners.add(listener);
-	}
+  public void addLsitener(FileChangeListener listener) {
+    listeners.add(listener);
+  }
 
-	public void render(SlimRenderContext ctx, SlimRenderVisitor visitor) {
-		visitor.render(ctx, this);
-	}
+  public void render(SlimRenderContext ctx, SlimRenderVisitor visitor) {
+    visitor.render(ctx, this);
+  }
 
-	public String toString() {
-		return file.getName();
-	}
+  public String toString() {
+    return file.getName();
+  }
 
-	public Collection<SlimLineWrapper> getLines() {
-		load();
-		return lines.values();
-	}
+  public Collection<SlimLineWrapper> getLines() {
+    load();
+    return lines.values();
+  }
 
-	private void load() {
-		if (!loaded) {
-			long start = System.currentTimeMillis();
-			try {
-				if (file.exists()) {
-					BufferedReader buffr = new BufferedReader(new FileReader(file), 4096);
-					String line = null;
-					int lineNo = 0;
-					SlimLineWrapper wrapper;
-					while ((line = buffr.readLine()) != null) {
-						wrapper = new SlimLineWrapper(++lineNo, line + "\n", this);
-						lines.put(wrapper.getLineNumber(), wrapper);
-					}
-					wrapper = new SlimLineWrapper(++lineNo, "", this);
-					lines.put(wrapper.getLineNumber(), wrapper);
-					buffr.close();
-				} else {
-					lines.put(1, new SlimLineWrapper(1, "\n", this));
-				}
-			} catch (FileNotFoundException e) {
-				e.printStackTrace();
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
-			System.out.println(
-					"File loaded in " + (System.currentTimeMillis() - start) + "ms");
-			loaded = true;
-		}
-	}
+  private void load() {
+    if(!loaded) {
+      long start = System.currentTimeMillis();
+      try {
+        if(file.exists()) {
+          BufferedReader buffr = new BufferedReader(new FileReader(file), 4096);
+          String line = null;
+          int lineNo = 0;
+          SlimLineWrapper wrapper;
+          while((line = buffr.readLine()) != null) {
+            wrapper = new SlimLineWrapper(++lineNo, line + "\n", this);
+            lines.put(wrapper.getLineNumber(), wrapper);
+          }
+          wrapper = new SlimLineWrapper(++lineNo, "", this);
+          lines.put(wrapper.getLineNumber(), wrapper);
+          buffr.close();
+        } else {
+          lines.put(1, new SlimLineWrapper(1, "\n", this));
+        }
+      } catch(FileNotFoundException e) {
+        e.printStackTrace();
+      } catch(IOException e) {
+        e.printStackTrace();
+      }
+      System.out.println("File loaded in " + (System.currentTimeMillis() - start) + "ms");
+      loaded = true;
+    }
+  }
 
-	public File getFile() {
-		return file;
-	}
+  public File getFile() {
+    return file;
+  }
 
-	public Set<File> getNext() {
-		Set<File> nextFiles = new TreeSet<File>();
-		if (file.exists()) {
-			for (File f : file.getParentFile().listFiles()) {
-				if (f.isFile() && !f.isHidden()) {
-					nextFiles.add(f);
-				}
-			}
-		}
-		return nextFiles;
-	}
+  public Set<File> getNext() {
+    Set<File> nextFiles = new TreeSet<File>();
+    if(file.exists()) {
+      for(File f: file.getParentFile().listFiles()) {
+        if(f.isFile() && !f.isHidden()) {
+          nextFiles.add(f);
+        }
+      }
+    }
+    return nextFiles;
+  }
 
-	public int getLineCount() {
-		return lines.size();
-	}
+  public int getLineCount() {
+    return lines.size();
+  }
 
-	public void remove(SlimLineWrapper line) {
-		int lineNum = line.getLineNumber();
-		lines.remove(lineNum);
-		int totalLines = getLineCount();
+  public void remove(SlimLineWrapper line) {
+    int lineNum = line.getLineNumber();
+    lines.remove(lineNum);
+    int totalLines = getLineCount();
 
-		Set<SlimLineWrapper> theLines = new HashSet<SlimLineWrapper>();
-		// resequence the lines
-		for (int i = lineNum + 1; i < totalLines; ++i) {
-			SlimLineWrapper ln = lines.remove(i);
-			ln.lineDeleted(line);
-			// remove from map
-			theLines.add(ln);
-		}
-		// rebuild line map
-		for (SlimLineWrapper l : theLines) {
-			lines.put(l.getLineNumber(), l);
-		}
-	}
+    Set<SlimLineWrapper> theLines = new HashSet<SlimLineWrapper>();
+    // resequence the lines
+    for(int i = lineNum + 1; i < totalLines; ++i) {
+      SlimLineWrapper ln = lines.remove(i);
+      ln.lineDeleted(line);
+      // remove from map
+      theLines.add(ln);
+    }
+    // rebuild line map
+    for(SlimLineWrapper l: theLines) {
+      lines.put(l.getLineNumber(), l);
+    }
+  }
 
-	public SlimLineWrapper getLine(int i) {
-		return lines.get(i);
-	}
+  public SlimLineWrapper getLine(int i) {
+    return lines.get(i);
+  }
 
-	public void save() throws IOException {
-		if (!file.exists()) {
-			file.createNewFile();
-		}
+  public void save() throws IOException {
+    if(!file.exists()) {
+      file.createNewFile();
+    }
 
-		PrintWriter pw = new PrintWriter(file);
-		int i = 0;
-		for (SlimLineWrapper line : lines.values()) {
-			pw.print(line.getLine());
-			if ((++i % FLUSH_RATE) == 0) {
-				pw.flush();
-			}
-		}
-		pw.flush();
-		pw.close();
-	}
+    PrintWriter pw = new PrintWriter(file);
+    int i = 0;
+    for(SlimLineWrapper line: lines.values()) {
+      pw.print(line.getLine());
+      if((++i % FLUSH_RATE) == 0) {
+        pw.flush();
+      }
+    }
+    pw.flush();
+    pw.close();
+  }
 
-	public void addLineAt(SlimLineWrapper line, int cursorColumn) {
-		String before = line.getLine().substring(0, cursorColumn);
-		String after = line.getLine().substring(cursorColumn,
-				line.getLine().length());
-		if (!before.endsWith("\n")) {
-			before += "\n";
-		}
-		SlimLineWrapper lineBefore = new SlimLineWrapper(line.getLineNumber(),
-				before, this);
-		SlimLineWrapper lineAfter = new SlimLineWrapper(line.getLineNumber() + 1,
-				after, this);
-		lines.put(lineBefore.getLineNumber(), lineBefore);
-		insertLine(lineAfter);
-	}
+  public void addLineAt(SlimLineWrapper line, int cursorColumn) {
+    String before = line.getLine().substring(0, cursorColumn);
+    String after = line.getLine().substring(cursorColumn, line.getLine().length());
+    if(!before.endsWith("\n")) {
+      before += "\n";
+    }
+    SlimLineWrapper lineBefore = new SlimLineWrapper(line.getLineNumber(), before, this);
+    SlimLineWrapper lineAfter = new SlimLineWrapper(line.getLineNumber() + 1, after, this);
+    lines.put(lineBefore.getLineNumber(), lineBefore);
+    insertLine(lineAfter);
+  }
 
-	private void insertLine(SlimLineWrapper line) {
-		int lineNum = line.getLineNumber();
-		int totalLines = getLineCount();
-		Set<SlimLineWrapper> toUpdate = new HashSet<SlimLineWrapper>();
-		for (int i = lineNum; i <= totalLines; ++i) {
-			SlimLineWrapper current = lines.remove(i);
-			toUpdate.add(current);
-			current.lineInserted(current);
-		}
-		for (SlimLineWrapper reinsert : toUpdate) {
-			lines.put(reinsert.getLineNumber(), reinsert);
-		}
-		lines.put(lineNum, line);
-	}
+  private void insertLine(SlimLineWrapper line) {
+    int lineNum = line.getLineNumber();
+    int totalLines = getLineCount();
+    Set<SlimLineWrapper> toUpdate = new HashSet<SlimLineWrapper>();
+    for(int i = lineNum; i <= totalLines; ++i) {
+      SlimLineWrapper current = lines.remove(i);
+      if(current != null) {
+        toUpdate.add(current);
+        current.lineInserted(current);
+      }
+    }
+    for(SlimLineWrapper reinsert: toUpdate) {
+      lines.put(reinsert.getLineNumber(), reinsert);
+    }
+    lines.put(lineNum, line);
+  }
 
-	@Override
-	public int compareTo(SlimFileWrapper o) {
-		return this.toString().compareTo(o.toString());
-	}
+  @Override
+  public int compareTo(SlimFileWrapper o) {
+    return this.toString().compareTo(o.toString());
+  }
 
-	public String getExtension() {
-		return file.getName().substring(file.getName().lastIndexOf('.'));
-	}
+  public String getExtension() {
+    int loc = file.getName().lastIndexOf('.');
+    if(loc > -1) {
+      return file.getName().substring(loc);
+    }
+    return "";
+  }
 
 }
