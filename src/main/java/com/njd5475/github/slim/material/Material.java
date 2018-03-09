@@ -1,6 +1,8 @@
 package com.njd5475.github.slim.material;
 
 import java.awt.Color;
+import java.awt.event.KeyEvent;
+import java.awt.event.MouseEvent;
 
 import com.njd5475.github.slim.material.renderer.MaterialRenderer;
 
@@ -23,6 +25,21 @@ public abstract class Material implements IMaterial {
 	
 	public IMaterial getParent() {
 		return parent;
+	}
+	
+	@Override
+	public boolean contains(int x, int y) {
+	  return x >= getX() && y >= getY() && x <= (getX()+getWidth()) && y <= (getY()+getHeight());
+	}
+	
+	@Override
+	public boolean canHandle(MouseEvent me) {
+	  return false;
+	}
+	
+	@Override
+	public boolean canHandle(KeyEvent ke) {
+	  return false;
 	}
 
   @Override
