@@ -6,6 +6,7 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.nio.file.Files;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Map;
@@ -175,6 +176,26 @@ public class SlimFileWrapper implements Comparable<SlimFileWrapper> {
       return file.getName().substring(loc);
     }
     return "";
+  }
+
+  public boolean qualifies() {
+    try {
+
+      BufferedReader buffr = Files.newBufferedReader(file.toPath());
+      char[] tBuf = new char[10];
+
+      int read = buffr.read(tBuf);
+      
+      int valids = 0;
+      for(char c : tBuf) {
+        if(c >= 32 && c < 127 || c == 9 || c == 10 || c == 12) {
+          ++valids;
+        }
+      }
+      return valids > 8;
+    } catch(IOException e) {
+    }
+    return false;
   }
 
 }

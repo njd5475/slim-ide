@@ -49,6 +49,9 @@ public class SlimFileContext implements Runnable, FileChangeListener {
 
   public void addNewFile(File file) {
     SlimFileWrapper wrapper = new SlimFileWrapper(file);
+    if(!wrapper.qualifies()) {
+      return;
+    }
     synchronized(files) {
       if(!files.contains(wrapper)) {
         wrapper.addLsitener(this);

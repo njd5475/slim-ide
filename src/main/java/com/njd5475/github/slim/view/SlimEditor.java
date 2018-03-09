@@ -293,7 +293,7 @@ public class SlimEditor extends JPanel {
     super.paintComponent(init);
 
     SlimRenderVisitor renderer = controller.getRenderer();
-    Graphics2D g = (Graphics2D) init;
+    Graphics2D g = (Graphics2D) init.create();
 
     g.setRenderingHints(renderingHints);
     g.translate(0, scrollOffsetY);
@@ -302,12 +302,14 @@ public class SlimEditor extends JPanel {
       System.out.println("Took " + (System.currentTimeMillis() - SlimIDE.start) + "ms to get to render");
       once = true;
     }
+    g.dispose();
 
+    g = (Graphics2D) init.create();
     if(awtRenderer == null) {
       awtRenderer = new AwtMaterialRenderer();
     }
     if(testMaterial == null) {
-      testMaterial = (new Screen((JFrame) this.getTopLevelAncestor())).top(10).minHeight(35).fill(Color.red);
+      testMaterial = (new Screen((JFrame) this.getTopLevelAncestor())).top(10).minHeight(35).fill(new Color(255,0,0,100));
     }
     awtRenderer.setGraphics(g);
     testMaterial.render(awtRenderer);
