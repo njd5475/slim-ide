@@ -3,6 +3,7 @@ package com.njd5475.github.slim.controller;
 import java.io.IOException;
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.Set;
 
 import com.njd5475.github.slim.model.SlimFileContext;
@@ -67,6 +68,7 @@ public class SlimController implements FileChangeListener {
 
     public SlimLineWrapper getLine(int linenum) {
         int totalLinesReached = 0, lastTotal = 0;
+        --linenum;
         for (SlimFileWrapper file : this.fileContext.getFiles()) {
             Collection<SlimLineWrapper> lines = file.getLines();
             lastTotal = totalLinesReached;
@@ -128,5 +130,17 @@ public class SlimController implements FileChangeListener {
         SlimLineWrapper line = getLine(cursorLine);
         line.getFile().addLineAt(line, cursorColumn);
         this.numberOfLines++;
+    }
+
+    public int getFileCountAt(int cursorLine) {
+      Iterator<SlimFileWrapper> ref = this.fileContext.getFiles().iterator();
+      int fileCount = 0;
+      SlimFileWrapper file;
+      while(ref.hasNext() && cursorLine > 0) {
+        file = ref.next();
+        cursorLine -= file.getLineCount()+file.getMarginCount();
+        ++fileCount;
+      }
+      return fileCount;
     }
 }

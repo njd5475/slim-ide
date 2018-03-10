@@ -54,16 +54,15 @@ public class DefaultAttachableRenderer implements SlimRenderVisitor {
   @Override
   public void render(SlimRenderContext ctx, SlimFileWrapper slimFileWrapper) {
     currentLineG = (Graphics2D) g.create();
-    currentLineG.translate(margin, 0);
     lineY = 0;
     Rectangle bb = g.getClipBounds();
 
-    currentLineG.translate(0, lineHeight);
     Graphics2D cursor = (Graphics2D) currentLineG.create();
-    cursor.translate(-margin, -lineHeight+2);
     renderFileSeparator(cursor);
+    cursor.drawString("Current File: " + slimFileWrapper.getFile().getName() + " Total lines " + slimFileWrapper.getLines().size(), 0, lineHeight);
     cursor.dispose();
-    currentLineG.drawString("Current File: " + slimFileWrapper.getFile().getName() + " Total lines " + slimFileWrapper.getLines().size(), 0, 0);
+    
+    currentLineG.translate(margin, 0);
     for(SlimLineWrapper line: slimFileWrapper.getLines()) {
       currentLineG.translate(0, lineHeight);
       lineY += lineHeight;
@@ -101,7 +100,7 @@ public class DefaultAttachableRenderer implements SlimRenderVisitor {
     margin = slimEditor.getCurrentMargin();
     lineHeight = slimEditor.getLineHeight();
     drawWidth = slimEditor.getWidth();
-    currentLine = 0;
+    currentLine = 1;
     cursorColumn = slimEditor.getCursorColumn();
     cursorLine = slimEditor.getCusorLine();
     if(context.getNextFile() != null) {
@@ -116,7 +115,7 @@ public class DefaultAttachableRenderer implements SlimRenderVisitor {
       if(context.hasFiles()) {
         for(SlimFileWrapper wrapper: context.getFiles()) {
           wrapper.render(ctx, this);
-          g.translate(0, (wrapper.getLineCount() * lineHeight) + lineHeight + maxDescent);
+          g.translate(0, (wrapper.getLineCount() * lineHeight) + lineHeight);
         }
       } else {
         g.drawString(nextStr, totalWidth / 2 - strWidth / 2, g.getClipBounds().height / 2 - lineHeight - maxDescent);
@@ -130,7 +129,7 @@ public class DefaultAttachableRenderer implements SlimRenderVisitor {
       }
     }
     long end = System.currentTimeMillis() - start;
-    // System.out.println("Render took " + end + "ms");
+    //System.out.println("Render took " + end + "ms");
     ctx.dispose();
   }
 
@@ -138,6 +137,12 @@ public class DefaultAttachableRenderer implements SlimRenderVisitor {
   public void render(SlimRenderContext ctx, SlimLineWrapper slimLineWrapper) {
     lineOnly = (Graphics2D) currentLineG.create();
     currentChar = 0;
+    lineOnly.translate(0, lineHeight);
+
+    Graphics2D marg = (Graphics2D) lineOnly.create();
+    marg.translate(-margin, 0);
+    marg.drawString(String.valueOf(slimLineWrapper.getLineNumber()), 0, 0);
+    marg.dispose();
     if(currentLine == cursorLine) {
       Graphics2D cursor = (Graphics2D) lineOnly.create();
       cursor.setColor(new Color(Color.yellow.getRed(), Color.yellow.getGreen(), Color.yellow.getBlue(), 100));

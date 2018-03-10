@@ -33,14 +33,14 @@ public class SlimEditor extends JPanel {
 
   private Set<EditorListener>             listeners     = new HashSet<EditorListener>();
   private SlimController                  controller;
-  private int                             margin        = 10;
+  private int                             margin        = 30;
   private int                             lineHeight    = 15;
   private boolean                         fixedWidth    = false;
   private boolean                         once;
   private double                          scrollOffsetY = 0;
   private Color                           background    = Color.white;
   private Map<RenderingHints.Key, Object> renderingHints;
-  private int                             cursorLine;
+  private int                             cursorLine = 1;
   private int                             cursorColumn;
   private Set<SlimFileWrapper>            filesShown    = new HashSet<SlimFileWrapper>();
   private int                             minLine;
@@ -195,6 +195,7 @@ public class SlimEditor extends JPanel {
 
   protected void scrollToCursor() {
     scrollOffsetY = -this.cursorLine * this.getLineHeight();
+    scrollOffsetY -= (this.getLineHeight()) * (this.controller.getFileCountAt(this.cursorLine)-1);
     scrollOffsetY = Math.min(0, scrollOffsetY);
     if(Math.abs(scrollOffsetY) + getHeight() > getMaxHeight() + getLineHeight()) {
       scrollOffsetY = -(getMaxHeight() - getHeight() + getLineHeight());
@@ -248,22 +249,25 @@ public class SlimEditor extends JPanel {
   }
 
   protected void clampCursor() {
+    System.out.println("Current window line start: " + this.getCurrentWindowLineStart());
     SlimController ctrl = SlimEditor.this.controller;
 
-    if(cursorLine < 0) {
-      cursorLine = 0;
+    if(cursorLine < 1) {
+      cursorLine = 1;
     }
 
-    if(cursorColumn >= ctrl.getLineLength(cursorLine) && cursorLine < ctrl.getTotalLines() - 1) {
-      cursorLine++;
-      cursorColumn = 0;
-    }
-
-    if(cursorColumn >= ctrl.getLineLength(cursorLine) && cursorLine >= ctrl.getTotalLines() - 1) {
-      cursorLine = ctrl.getTotalLines() - 1;
+    if(cursorColumn >= ctrl.getLineLength(cursorLine) && cursorLine >= ctrl.getTotalLines()) {
+      cursorLine = ctrl.getTotalLines();
       cursorColumn = ctrl.getLineLength(cursorLine);
     }
-
+    
+    if(cursorColumn >= ctrl.getLineLength(cursorLine)) {
+      if(cursorColumn != 0) {
+        cursorLine++;
+      }
+      cursorColumn = 0;
+    }
+    
     if(cursorColumn < 0) {
       cursorLine--;
       if(cursorLine < 0) {
@@ -271,9 +275,9 @@ public class SlimEditor extends JPanel {
       }
       cursorColumn = ctrl.getLineLength(cursorLine) - 1;
     }
-
-    if(cursorLine >= ctrl.getTotalLines() - 1) {
-      cursorLine = ctrl.getTotalLines() - 1;
+    
+    if(cursorLine >= ctrl.getTotalLines()) {
+      cursorLine = ctrl.getTotalLines();
     }
   }
 
@@ -335,6 +339,10 @@ public class SlimEditor extends JPanel {
 
   public int getLineHeight() {
     return lineHeight;
+  }
+  
+  public int getCurrentWindowLineStart() {
+    return (int)Math.abs(this.scrollOffsetY / getLineHeight());
   }
 
   public int getMaxHeight() {
