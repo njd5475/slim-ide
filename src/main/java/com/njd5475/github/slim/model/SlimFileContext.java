@@ -157,13 +157,16 @@ public class SlimFileContext implements Runnable, FileChangeListener {
     Map<String, Set<SlimFileWrapper>> ext = new HashMap<>();
     Set<SlimFileWrapper> forExt;
     String extension;
-    for(SlimFileWrapper sf: files) {
-      forExt = ext.get(extension = sf.getExtension());
-      if(forExt == null) {
-        forExt = new HashSet<>();
-        ext.put(extension, forExt);
+    synchronized(files) {
+      for(SlimFileWrapper sf: files) {
+        forExt = ext.get(extension = sf.getExtension());
+        if(forExt == null) {
+          forExt = new HashSet<>();
+          ext.put(extension, forExt);
+        }
+        forExt.add(sf);
       }
-      forExt.add(sf);
+      files.notifyAll();
     }
     return ext;
   }

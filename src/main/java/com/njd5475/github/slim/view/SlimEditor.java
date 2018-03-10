@@ -22,6 +22,7 @@ import java.util.Set;
 
 import javax.swing.JFrame;
 import javax.swing.JPanel;
+import javax.swing.SwingUtilities;
 
 import com.njd5475.github.slim.controller.SlimController;
 import com.njd5475.github.slim.material.Material;
@@ -40,14 +41,14 @@ public class SlimEditor extends JPanel {
   private double                          scrollOffsetY = 0;
   private Color                           background    = Color.white;
   private Map<RenderingHints.Key, Object> renderingHints;
-  private int                             cursorLine = 1;
+  private int                             cursorLine    = 1;
   private int                             cursorColumn;
   private Set<SlimFileWrapper>            filesShown    = new HashSet<SlimFileWrapper>();
   private int                             minLine;
   private int                             maxLine;
   private Material                        testMaterial;
   private AwtMaterialRenderer             awtRenderer;
-  private boolean choosenFont;
+  private boolean                         choosenFont;
 
   public SlimEditor(SlimSettings defaults, SlimController controller) {
     this.setPreferredSize(defaults.getWindowDimensions());
@@ -119,8 +120,11 @@ public class SlimEditor extends JPanel {
         }
 
         clampCursor();
+        //only if the cursor goes outside the view area
+        if(cursorOutsideView()) {
         scrollToCursor();
-        
+        }
+
         SlimEditor.this.repaint();
       }
 
@@ -163,39 +167,25 @@ public class SlimEditor extends JPanel {
       }
 
     });
-    this.addComponentListener(new ComponentListener() {
-
-      @Override
-      public void componentResized(ComponentEvent e) {
-        // TODO Auto-generated method stub
-
-      }
-
-      @Override
-      public void componentMoved(ComponentEvent e) {
-        // TODO Auto-generated method stub
-
-      }
-
-      @Override
-      public void componentShown(ComponentEvent e) {
+    SwingUtilities.invokeLater(new Runnable() {
+      public void run() {
         chooseFont();
+        SlimEditor.this.repaint();
       }
-
-      @Override
-      public void componentHidden(ComponentEvent e) {
-        // TODO Auto-generated method stub
-
-      }
-
     });
     this.setBackground(background);
     refreshRenderingHints();
   }
 
+  protected boolean cursorOutsideView() {
+    int currentLineY = getLineHeight() * cursorLine + getLineHeight() * controller.getFileCountAt(cursorLine);
+    
+    return currentLineY < Math.abs(scrollOffsetY) || currentLineY > Math.abs(scrollOffsetY) + this.getHeight();
+  }
+
   protected void scrollToCursor() {
     scrollOffsetY = -this.cursorLine * this.getLineHeight();
-    scrollOffsetY -= (this.getLineHeight()) * (this.controller.getFileCountAt(this.cursorLine)-1);
+    scrollOffsetY -= (this.getLineHeight()) * (this.controller.getFileCountAt(this.cursorLine) - 1);
     scrollOffsetY = Math.min(0, scrollOffsetY);
     if(Math.abs(scrollOffsetY) + getHeight() > getMaxHeight() + getLineHeight()) {
       scrollOffsetY = -(getMaxHeight() - getHeight() + getLineHeight());
@@ -217,7 +207,7 @@ public class SlimEditor extends JPanel {
         useMe = fonts[0];
       }
       useMe = useMe.deriveFont(12f).deriveFont(Font.PLAIN);
-      SlimEditor.this.setFont(useMe);
+      this.setFont(useMe);
       this.choosenFont = true;
     }
   }
@@ -249,7 +239,6 @@ public class SlimEditor extends JPanel {
   }
 
   protected void clampCursor() {
-    System.out.println("Current window line start: " + this.getCurrentWindowLineStart());
     SlimController ctrl = SlimEditor.this.controller;
 
     if(cursorLine < 1) {
@@ -260,22 +249,16 @@ public class SlimEditor extends JPanel {
       cursorLine = ctrl.getTotalLines();
       cursorColumn = ctrl.getLineLength(cursorLine);
     }
-    
-    if(cursorColumn >= ctrl.getLineLength(cursorLine)) {
-      if(cursorColumn != 0) {
-        cursorLine++;
-      }
-      cursorColumn = 0;
-    }
-    
+
     if(cursorColumn < 0) {
       cursorLine--;
-      if(cursorLine < 0) {
-        cursorLine = 0;
+      if(cursorLine < 1) {
+        cursorLine = 1;
+      } else {
+        cursorColumn = ctrl.getLineLength(cursorLine) - 1;
       }
-      cursorColumn = ctrl.getLineLength(cursorLine) - 1;
     }
-    
+
     if(cursorLine >= ctrl.getTotalLines()) {
       cursorLine = ctrl.getTotalLines();
     }
@@ -288,8 +271,8 @@ public class SlimEditor extends JPanel {
     renderingHints.put(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_QUALITY);
     renderingHints.put(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
     renderingHints.put(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BICUBIC);
-    renderingHints.put(RenderingHints.KEY_FRACTIONALMETRICS, RenderingHints.VALUE_FRACTIONALMETRICS_ON);
-    renderingHints.put(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
+    //renderingHints.put(RenderingHints.KEY_FRACTIONALMETRICS, RenderingHints.VALUE_FRACTIONALMETRICS_ON);
+    //renderingHints.put(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
   }
 
   @Override
@@ -313,7 +296,8 @@ public class SlimEditor extends JPanel {
       awtRenderer = new AwtMaterialRenderer();
     }
     if(testMaterial == null) {
-      testMaterial = (new Screen((JFrame) this.getTopLevelAncestor())).top(10).minHeight(35).fill(new Color(255,0,0,100));
+      testMaterial = (new Screen((JFrame) this.getTopLevelAncestor())).top(10).minHeight(35)
+          .fill(new Color(255, 0, 0, 100));
     }
     awtRenderer.setGraphics(g);
     testMaterial.render(awtRenderer);
@@ -340,9 +324,9 @@ public class SlimEditor extends JPanel {
   public int getLineHeight() {
     return lineHeight;
   }
-  
+
   public int getCurrentWindowLineStart() {
-    return (int)Math.abs(this.scrollOffsetY / getLineHeight());
+    return (int) Math.abs(this.scrollOffsetY / getLineHeight());
   }
 
   public int getMaxHeight() {
