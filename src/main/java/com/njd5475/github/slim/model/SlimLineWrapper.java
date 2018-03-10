@@ -13,13 +13,11 @@ public class SlimLineWrapper implements SlimRenderable, Comparable<SlimLineWrapp
 	private int lineNum;
 	private Set<SlimSymbolWrapper> symbols;
 	private String originalLine;
-  private int lineNumInFile;
 
-	public SlimLineWrapper(int lineNum, String line, int lnInFile, SlimFileWrapper wrapper) {
+	public SlimLineWrapper(int lineNum, String line, SlimFileWrapper wrapper) {
 		this.file = wrapper;
 		this.lineNum = lineNum;
 		this.originalLine = line;
-		this.lineNumInFile = lnInFile;
 		this.symbols = SlimSymbolWrapper.build(this);
 	}
 
@@ -148,9 +146,5 @@ public class SlimLineWrapper implements SlimRenderable, Comparable<SlimLineWrapp
 			this.lineNum++;
 		}
 	}
-
-  public int getLineInFile() {
-    return this.lineNumInFile;
-  }
 
 }

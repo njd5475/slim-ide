@@ -57,14 +57,14 @@ public class SlimFileWrapper implements Comparable<SlimFileWrapper> {
           int lineNo = 0;
           SlimLineWrapper wrapper;
           while((line = buffr.readLine()) != null) {
-            wrapper = new SlimLineWrapper(++lineNo, line + "\n", lineNo, this);
+            wrapper = new SlimLineWrapper(++lineNo, line + "\n", this);
             lines.put(wrapper.getLineNumber(), wrapper);
           }
-          wrapper = new SlimLineWrapper(++lineNo, "", lineNo, this);
+          wrapper = new SlimLineWrapper(++lineNo, "", this);
           lines.put(wrapper.getLineNumber(), wrapper);
           buffr.close();
         } else {
-          lines.put(1, new SlimLineWrapper(1, "\n", 1, this));
+          lines.put(1, new SlimLineWrapper(1, "\n", this));
         }
       } catch(FileNotFoundException e) {
         e.printStackTrace();
@@ -142,8 +142,8 @@ public class SlimFileWrapper implements Comparable<SlimFileWrapper> {
     if(!before.endsWith("\n")) {
       before += "\n";
     }
-    SlimLineWrapper lineBefore = new SlimLineWrapper(line.getLineNumber(), before, line.getLineInFile(), this);
-    SlimLineWrapper lineAfter = new SlimLineWrapper(line.getLineNumber() + 1, after, line.getLineInFile()+1, this);
+    SlimLineWrapper lineBefore = new SlimLineWrapper(line.getLineNumber(), before, this);
+    SlimLineWrapper lineAfter = new SlimLineWrapper(line.getLineNumber() + 1, after, this);
     lines.put(lineBefore.getLineNumber(), lineBefore);
     insertLine(lineAfter);
   }
