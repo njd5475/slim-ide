@@ -48,4 +48,10 @@ public class AwtMaterialRenderer implements MaterialRenderer {
     g.setColor(last);
   }
 
+  @Override
+  public void renderText(String text, Material m) {
+    g.setColor(Color.white);
+    g.drawString(text, m.getX(), m.getY()+g.getFontMetrics().getHeight());
+  }
+
 }

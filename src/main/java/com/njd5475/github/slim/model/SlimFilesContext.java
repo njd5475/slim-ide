@@ -17,14 +17,14 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 
 import com.njd5475.github.slim.controller.FileChangeListener;
 
-public class SlimFileContext implements Runnable, FileChangeListener {
+public class SlimFilesContext implements Runnable, FileChangeListener {
 
   private Set<SlimFileWrapper>              files     = new TreeSet<SlimFileWrapper>();
   private Set<FileChangeListener>           listeners = new HashSet<FileChangeListener>();
   private Map<String, Set<SlimFileWrapper>> byExt;
   private Queue<File>                       toLoad    = new ConcurrentLinkedQueue<>();
 
-  public SlimFileContext(String[] args) {
+  public SlimFilesContext(String[] args) {
     for(String arg: args) {
       File file = new File(arg);
       toLoad.add(file);

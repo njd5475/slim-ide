@@ -7,14 +7,13 @@ import java.awt.Graphics2D;
 import java.awt.GraphicsEnvironment;
 import java.awt.RenderingHints;
 import java.awt.RenderingHints.Key;
-import java.awt.event.ComponentEvent;
-import java.awt.event.ComponentListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseWheelEvent;
 import java.awt.event.MouseWheelListener;
+import java.io.File;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -297,7 +296,7 @@ public class SlimEditor extends JPanel {
     }
     if(testMaterial == null) {
       testMaterial = (new Screen((JFrame) this.getTopLevelAncestor())).top(10).minHeight(35)
-          .fill(new Color(255, 0, 0, 100));
+          .fill(new Color(255, 0, 0, 100)).text((new File(".")).getAbsolutePath());
     }
     awtRenderer.setGraphics(g);
     testMaterial.render(awtRenderer);

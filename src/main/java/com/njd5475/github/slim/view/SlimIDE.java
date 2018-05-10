@@ -15,7 +15,7 @@ import javax.imageio.ImageIO;
 import javax.swing.JFrame;
 
 import com.njd5475.github.slim.controller.SlimController;
-import com.njd5475.github.slim.model.SlimFileContext;
+import com.njd5475.github.slim.model.SlimFilesContext;
 import com.njd5475.github.slim.model.SlimFileWrapper;
 
 public class SlimIDE {
@@ -30,7 +30,7 @@ public class SlimIDE {
 	private static JFrame frame;
 
 	public static void main(String[] args) {
-		SlimFileContext fileContext = new SlimFileContext(args);
+		SlimFilesContext fileContext = new SlimFilesContext(args);
 		SlimSettings defaults = SlimSettings.loadDefaults();
 		frame = new JFrame("SlimIDE");
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);

@@ -11,7 +11,7 @@ import java.io.IOException;
 import javax.swing.JPanel;
 
 import com.njd5475.github.slim.controller.SlimController;
-import com.njd5475.github.slim.model.SlimFileContext;
+import com.njd5475.github.slim.model.SlimFilesContext;
 import com.njd5475.github.slim.model.SlimFileWrapper;
 import com.njd5475.github.slim.model.SlimLineWrapper;
 import com.njd5475.github.slim.model.SlimSymbolWrapper;
@@ -96,7 +96,7 @@ public class DefaultAttachableRenderer implements SlimRenderVisitor {
     this.widths = g.getFontMetrics().getWidths();
     this.maxDescent = g.getFontMetrics().getMaxDescent();
     SlimController controller = slimEditor.getController();
-    SlimFileContext context = controller.getFileContext();
+    SlimFilesContext context = controller.getFileContext();
     margin = slimEditor.getCurrentMargin();
     lineHeight = slimEditor.getLineHeight();
     drawWidth = slimEditor.getWidth();

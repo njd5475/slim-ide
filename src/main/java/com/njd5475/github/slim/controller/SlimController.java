@@ -6,7 +6,7 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
 
-import com.njd5475.github.slim.model.SlimFileContext;
+import com.njd5475.github.slim.model.SlimFilesContext;
 import com.njd5475.github.slim.model.SlimFileWrapper;
 import com.njd5475.github.slim.model.SlimLineWrapper;
 import com.njd5475.github.slim.model.SlimSymbolWrapper;
@@ -14,11 +14,11 @@ import com.njd5475.github.slim.view.SlimRenderVisitor;
 
 public class SlimController implements FileChangeListener {
 
-    private SlimFileContext   fileContext;
+    private SlimFilesContext   fileContext;
     private SlimRenderVisitor renderer;
     private int               numberOfLines;
 
-    public SlimController(SlimRenderVisitor renderer, SlimFileContext fileContext) {
+    public SlimController(SlimRenderVisitor renderer, SlimFilesContext fileContext) {
         this.fileContext = fileContext;
         this.fileContext.addListener(this);
         for (SlimFileWrapper file : this.fileContext.getFiles()) {
@@ -37,7 +37,7 @@ public class SlimController implements FileChangeListener {
         return renderer;
     }
 
-    public SlimFileContext getFileContext() {
+    public SlimFilesContext getFileContext() {
         return fileContext;
     }
 

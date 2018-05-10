@@ -126,4 +126,18 @@ public abstract class Material implements IMaterial {
 	  
 	  return m;
 	}
+	
+	public Material text(String toShow) {
+	  Material m = new Material(this) {
+	    private String text = toShow;
+	    
+	    @Override
+	    public void render(MaterialRenderer r) {
+	      super.render(r);
+	      r.renderText(text, this);
+	    }
+	  };
+	  
+	  return m;
+	}
 }

@@ -13,5 +13,6 @@ public interface MaterialRenderer {
 	public void render(MaterialGroup group);
 	public void render(SolidMaterial solidMaterial);
   public void fill(Material m, Color clr);
+  public void renderText(String text, Material material);
 	
 }
