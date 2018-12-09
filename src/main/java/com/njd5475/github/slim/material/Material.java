@@ -41,6 +41,11 @@ public abstract class Material implements IMaterial {
 	public boolean canHandle(KeyEvent ke) {
 	  return false;
 	}
+	
+	@Override
+	public void doKey(KeyEvent e) {
+	  
+	}
 
   @Override
   public int getX() {
@@ -122,6 +127,30 @@ public abstract class Material implements IMaterial {
       public int getHeight() {
         return Math.max(minHeight, super.getHeight());
       }
+	  };
+	  
+	  return m;
+	}
+	
+	public Material dynamicText(String toShow) {
+	  Material m = new Material(this) {
+	    private StringBuilder text = new StringBuilder(toShow);
+	    
+	    @Override
+      public boolean canHandle(KeyEvent ke) {
+        return true;
+      }
+	    
+	    @Override
+	    public void doKey(KeyEvent e) {
+	      text.append(e.getKeyChar());
+	    }
+
+      @Override
+	    public void render(MaterialRenderer r) {
+	      super.render(r);
+	      r.renderText(text.toString(), this);
+	    }
 	  };
 	  
 	  return m;
