@@ -68,7 +68,12 @@ public class SlimEditor extends JPanel {
 
       @Override
       public void keyTyped(KeyEvent e) {
-        if (e.getKeyChar() >= ' ' && e.getKeyChar() <= '~') {
+        for(IMaterial m : materials) {
+          if(m.canHandle(e)) {
+            m.doKey(e);
+          }
+        }
+        if (!e.isConsumed() && e.getKeyChar() >= ' ' && e.getKeyChar() <= '~') {
           SlimEditor.this.controller.addCharacterAt(e.getKeyChar(), cursorLine, cursorColumn);
           cursorColumn++;
           clampCursor();
@@ -78,54 +83,58 @@ public class SlimEditor extends JPanel {
 
       @Override
       public void keyPressed(KeyEvent e) {
-        for(IMaterial m : materials) {
-          if(m.canHandle(e)) {
+        for (IMaterial m : materials) {
+          if (m.canHandle(e)) {
             m.doKey(e);
           }
         }
-        if (e.getKeyCode() == KeyEvent.VK_RIGHT) {
-          cursorColumn++;
-        } else if (e.getKeyCode() == KeyEvent.VK_LEFT) {
-          cursorColumn--;
-        } else if (e.getKeyCode() == KeyEvent.VK_UP) {
-          cursorLine--;
-        } else if (e.getKeyCode() == KeyEvent.VK_DOWN) {
-          cursorLine++;
-        } else if (e.getKeyCode() == KeyEvent.VK_END) {
-          cursorColumn = SlimEditor.this.controller.getLineLength(cursorLine) - 1;
-        } else if (e.getKeyCode() == KeyEvent.VK_HOME) {
-          cursorColumn = 0;
-        } else if (e.getKeyCode() == KeyEvent.VK_T && e.isAltDown()) {
-          if (SlimIDE.DEVELOPMENT) {
-            SlimIDE.takeScreenshot();
-          }
-        } else if (e.getKeyCode() == KeyEvent.VK_S && e.isControlDown()) {
-          SlimEditor.this.controller.saveCurrentFile(cursorLine);
-        } else if (e.getKeyCode() == KeyEvent.VK_O && e.isControlDown()) {
-          SlimEditor.this.controller.openNextFile();
-        } else if (e.getKeyCode() == KeyEvent.VK_ENTER) {
-          SlimEditor.this.controller.addLineAt(cursorLine, cursorColumn);
-          cursorLine++;
-          cursorColumn = 0;
-        } else if (e.getKeyCode() == KeyEvent.VK_DELETE) {
-          SlimEditor.this.controller.removeCharacterAt(cursorLine, cursorColumn);
-        } else if (e.getKeyCode() == KeyEvent.VK_BACK_SPACE) {
-          if (cursorColumn > 0) {
-            SlimEditor.this.controller.removeCharacterAt(cursorLine, --cursorColumn);
-          } else {
-            if (cursorLine > 0) {
-              // fake it
-              --cursorLine;
-              cursorColumn = SlimEditor.this.controller.getLine(cursorLine).length() - 1;
-              SlimEditor.this.controller.removeCharacterAt(cursorLine, cursorColumn);
+        if (!e.isConsumed()) {
+          if (e.getKeyCode() == KeyEvent.VK_RIGHT) {
+            cursorColumn++;
+          } else if (e.getKeyCode() == KeyEvent.VK_LEFT) {
+            cursorColumn--;
+          } else if (e.getKeyCode() == KeyEvent.VK_UP) {
+            cursorLine--;
+          } else if (e.getKeyCode() == KeyEvent.VK_DOWN) {
+            cursorLine++;
+          } else if (e.getKeyCode() == KeyEvent.VK_END) {
+            cursorColumn = SlimEditor.this.controller.getLineLength(cursorLine) - 1;
+          } else if (e.getKeyCode() == KeyEvent.VK_HOME) {
+            cursorColumn = 0;
+          } else if (e.getKeyCode() == KeyEvent.VK_T && e.isAltDown()) {
+            if (SlimIDE.DEVELOPMENT) {
+              SlimIDE.takeScreenshot();
+            }
+          } else if (e.getKeyCode() == KeyEvent.VK_S && e.isControlDown()) {
+            SlimEditor.this.controller.saveCurrentFile(cursorLine);
+          } else if (e.getKeyCode() == KeyEvent.VK_O && e.isControlDown()) {
+            SlimEditor.this.controller.openNextFile();
+          } else if (e.getKeyCode() == KeyEvent.VK_ENTER) {
+            SlimEditor.this.controller.addLineAt(cursorLine, cursorColumn);
+            cursorLine++;
+            cursorColumn = 0;
+          } else if (e.getKeyCode() == KeyEvent.VK_DELETE) {
+            SlimEditor.this.controller.removeCharacterAt(cursorLine, cursorColumn);
+          } else if (e.getKeyCode() == KeyEvent.VK_BACK_SPACE) {
+            if (cursorColumn > 0) {
+              SlimEditor.this.controller.removeCharacterAt(cursorLine, --cursorColumn);
+            } else {
+              if (cursorLine > 0) {
+                // fake it
+                --cursorLine;
+                cursorColumn = SlimEditor.this.controller.getLine(cursorLine).length() - 1;
+                SlimEditor.this.controller.removeCharacterAt(cursorLine, cursorColumn);
+              }
             }
           }
-        }
 
-        clampCursor();
-        // only if the cursor goes outside the view area
-        if (cursorOutsideView()) {
-          scrollToCursor();
+          clampCursor();
+          // only if the cursor goes outside the view area
+          if (cursorOutsideView()) {
+            scrollToCursor();
+          }
+        }else {
+          System.out.println("Key was consumed");
         }
 
         SlimEditor.this.repaint();
@@ -301,7 +310,7 @@ public class SlimEditor extends JPanel {
       awtRenderer = new AwtMaterialRenderer();
     }
     awtRenderer.setGraphics(g);
-    for(IMaterial m : this.materials) {
+    for (IMaterial m : this.materials) {
       m.render(awtRenderer);
     }
     g.dispose();
@@ -345,11 +354,11 @@ public class SlimEditor extends JPanel {
   }
 
   public void addMaterial(IMaterial widget) {
-     this.materials.add(widget);
+    this.materials.add(widget);
   }
 
   public void addWidgets(Collection<IMaterial> widgets) {
-     this.materials.addAll(widgets);
+    this.materials.addAll(widgets);
   }
 
 }

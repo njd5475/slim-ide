@@ -120,6 +120,7 @@ public class SlimFileWrapper implements Comparable<SlimFileWrapper> {
   }
 
   public void save() throws IOException {
+    System.out.println("Saving file " + file.getAbsolutePath());
     if(!file.exists()) {
       file.createNewFile();
     }

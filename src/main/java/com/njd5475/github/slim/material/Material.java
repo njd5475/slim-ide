@@ -18,6 +18,7 @@ import com.njd5475.github.slim.material.renderer.MaterialRenderer;
 public abstract class Material implements IMaterial {
 
 	private IMaterial parent;
+	private static Emitter emitter = new Emitter();
 	
 	public Material(IMaterial parent) {
 		this.parent = parent;
@@ -25,6 +26,10 @@ public abstract class Material implements IMaterial {
 	
 	public IMaterial getParent() {
 		return parent;
+	}
+	
+	public Emitter getEmitter() {
+	  return emitter;
 	}
 	
 	@Override
@@ -143,7 +148,15 @@ public abstract class Material implements IMaterial {
 	    
 	    @Override
 	    public void doKey(KeyEvent e) {
-	      text.append(e.getKeyChar());
+	      e.consume();
+	      if(e.getID() != KeyEvent.KEY_TYPED) {
+	        if(e.getKeyCode() == KeyEvent.VK_BACK_SPACE) {
+	          text.deleteCharAt(text.length() - 1);
+	        }else if(e.getKeyChar() >= ' ' && e.getKeyChar() <= '~'){
+	          text.append(e.getKeyChar());
+	        }
+	        emitter.send("TEXT_CHANGED", text);
+	      }
 	    }
 
       @Override
